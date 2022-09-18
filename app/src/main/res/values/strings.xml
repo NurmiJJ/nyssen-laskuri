@@ -1,0 +1,10 @@
+<resources>
+    <string name="app_name">Nysselaskin</string>
+    <string name="bussi">Bussi</string>
+    <string name="raitsikka">Raitsikka</string>
+    <string name="add_new">Lisää matka!</string>
+    <string name="fab">Lisätään matka!</string>
+    <string name="welcome_new_activity">Lisätään uusi matka!</string>
+    <string name="date">Päivämäärä</string>
+    <string name="time">Kellonaika</string>
+</resources>

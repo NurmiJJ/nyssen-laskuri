@@ -9,10 +9,10 @@
         android:id="@+id/textViewType"
         android:layout_width="30dp"
         android:layout_height="30dp"
-        android:layout_marginStart="24dp"
+        android:layout_marginStart="8dp"
         android:layout_marginTop="8dp"
-        android:background="@android:color/holo_orange_light"
-        android:textAlignment="center"
+        android:layout_marginEnd="8dp"
+        app:layout_constraintEnd_toStartOf="@+id/textViewJourneyDate"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent" />
 
@@ -20,22 +20,24 @@
         android:id="@+id/textViewJourneyDate"
         android:layout_width="0dp"
         android:layout_height="30dp"
-        android:layout_marginStart="16dp"
-        android:layout_marginEnd="16dp"
-        android:background="@android:color/holo_orange_light"
-        app:layout_constraintBaseline_toBaselineOf="@+id/textViewType"
+        android:background="@color/colorAccent"
+        android:gravity="center_vertical"
+        android:textSize="15sp"
         app:layout_constraintEnd_toStartOf="@+id/textViewZones"
-        app:layout_constraintStart_toEndOf="@+id/textViewType" />
+        app:layout_constraintStart_toEndOf="@+id/textViewType"
+        app:layout_constraintTop_toTopOf="@+id/textViewType" />
 
     <TextView
         android:id="@+id/textViewZones"
         android:layout_width="50dp"
         android:layout_height="30dp"
-        android:layout_marginEnd="24dp"
-        android:background="@android:color/holo_orange_light"
-        app:layout_constraintBaseline_toBaselineOf="@+id/textViewType"
+        android:layout_marginStart="8dp"
+        android:layout_marginEnd="8dp"
+        android:gravity="center"
+        android:background="@color/colorAccent"
         app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintStart_toEndOf="@+id/textViewJourneyDate" />
+        app:layout_constraintStart_toEndOf="@+id/textViewJourneyDate"
+        app:layout_constraintTop_toTopOf="@+id/textViewType" />
 
 
 </androidx.constraintlayout.widget.ConstraintLayout>

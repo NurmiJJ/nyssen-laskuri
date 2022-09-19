@@ -7,4 +7,6 @@
     <string name="welcome_new_activity">Lisätään uusi matka!</string>
     <string name="date">Päivämäärä</string>
     <string name="time">Kellonaika</string>
+    <string name="chooseVehicle">Millä liikut tänään?</string>
+    <string name="deleteOne">Poista valittu matka</string>
 </resources>

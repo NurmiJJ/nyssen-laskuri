@@ -23,6 +23,7 @@ class MatkaListAdapter(private val mList: ArrayList<Matka> ): ListAdapter<Matka,
 
         holder.itemView.setOnClickListener { v ->
             matka = current
+
             Snackbar.make(v, "Matka " + current.date, Snackbar.LENGTH_LONG)
                 .setAction("Action", null).show()
         }
@@ -31,13 +32,13 @@ class MatkaListAdapter(private val mList: ArrayList<Matka> ): ListAdapter<Matka,
     class MatkaViewHolder(itemView: View) : RecyclerView.ViewHolder(itemView) {
         private val typeItemView: TextView = itemView.findViewById(R.id.textViewType)
         private val journeyItemView: TextView = itemView.findViewById(R.id.textViewJourneyDate)
-        private val priceItemView: TextView = itemView.findViewById(R.id.textViewZones)
+        private val zonesItemView: TextView = itemView.findViewById(R.id.textViewZones)
 
 
         fun bind(matka: Matka) {
-            typeItemView.text = matka.vehicleType
+            typeItemView.setCompoundDrawablesWithIntrinsicBounds(vehicleIcon(matka.vehicleType), 0, 0, 0)
             journeyItemView.text = matka.date?.let { dateToString(it) }
-            priceItemView.text = "0€"
+            zonesItemView.text = "A-B"
         }
 
         companion object {
@@ -49,7 +50,7 @@ class MatkaListAdapter(private val mList: ArrayList<Matka> ): ListAdapter<Matka,
         }
     }
 
-    fun getMatka(): Matka? {
+    fun getJourney(): Matka? {
         return matka
     }
 

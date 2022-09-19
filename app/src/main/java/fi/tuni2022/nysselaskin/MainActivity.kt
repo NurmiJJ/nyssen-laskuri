@@ -2,10 +2,14 @@ package fi.tuni2022.nysselaskin
 
 import android.annotation.SuppressLint
 import android.app.Activity
+import android.app.AlertDialog
+import android.content.DialogInterface
 import android.content.Intent
 import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
 import android.util.Log
+import android.widget.Button
+import android.widget.TextView
 import androidx.activity.result.contract.ActivityResultContracts
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
@@ -26,6 +30,8 @@ class MainActivity : AppCompatActivity() {
     private var allJourneys: ArrayList<Matka> = ArrayList()
     private val adapter = MatkaListAdapter(allJourneys)
 
+    private lateinit var total: TextView
+
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_main)
@@ -36,6 +42,7 @@ class MainActivity : AppCompatActivity() {
 
         //auth = Firebase.auth
         updateDatabase()
+        total = findViewById(R.id.textViewTotal)
 
         val fab = findViewById<FloatingActionButton>(R.id.fab)
         fab.setOnClickListener {
@@ -43,6 +50,22 @@ class MainActivity : AppCompatActivity() {
             resultLauncher.launch(intent)
         }
 
+        val buttonDeleteOne = findViewById<Button>(R.id.buttonDeleteOne)
+        buttonDeleteOne.setOnClickListener {
+            val temp: Matka? = adapter.getJourney()
+            if (temp != null) {
+                Log.d(TAG, temp.date.toString())
+                AlertDialog.Builder(this)
+                    .setTitle("Delete Journey")
+                    .setMessage("Do you really want to delete " + temp.date + " ?")
+                    .setIcon(android.R.drawable.ic_delete)
+                    .setPositiveButton(android.R.string.yes,
+                        DialogInterface.OnClickListener { dialog, whichButton ->
+                            deleteJourney(temp)
+                        })
+                    .setNegativeButton(android.R.string.no, null).show()
+            }
+        }
     }
 
     private var resultLauncher = registerForActivityResult(
@@ -60,9 +83,10 @@ class MainActivity : AppCompatActivity() {
                 Log.d(TAG, split[0])
                 val date = stringToDate(split[0])
                 val type = split[1]
-                val zone = "tyhjää"
+                val zone = split[2]
+                val price = split[3].toDouble()
                 if (date != null) {
-                    addToDatabase(Matka(date, type, zone))
+                    addToDatabase(Matka(date, type, zone, price))
                 }
             }
         }
@@ -97,6 +121,23 @@ class MainActivity : AppCompatActivity() {
 
                 }
                 adapter.notifyDataSetChanged()
+                total.text = allJourneys.size.toString()
+            }
+    }
+
+    private fun deleteJourney(matka: Matka){
+        database.collection(collection)
+            .whereEqualTo("date", matka.date)
+            .get()
+            .addOnSuccessListener {value ->
+                if (value != null) {
+                    for (doc in value) {
+                        doc.reference.delete()
+                    }
+                }
+            }
+            .addOnFailureListener { exception ->
+                Log.d(TAG, "get failed with ", exception)
             }
     }
 }

@@ -5,5 +5,6 @@ import java.util.*
 data class Matka(
     val date: Date? = null,
     val vehicleType: String = "",
-    val zones: String = ""
+    val zones: String = "",
+    val price: Double = 0.0
 )

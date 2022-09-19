@@ -8,31 +8,44 @@
 
     <RadioGroup
         android:id="@+id/radioGroup"
-        android:layout_width="0dp"
-        android:layout_height="30dp"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
         android:layout_marginStart="16dp"
         android:layout_marginTop="24dp"
         android:layout_marginEnd="16dp"
         android:orientation="horizontal"
         app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintHorizontal_bias="0.0"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/textViewTop">
+        app:layout_constraintTop_toBottomOf="@+id/textViewChooseVehicle">
 
         <RadioButton
             android:id="@+id/radioButtonBussi"
-            android:layout_width="wrap_content"
+            android:layout_width="120dp"
             android:layout_height="wrap_content"
-            android:layout_weight="1"
+            android:layout_marginEnd="16dp"
+            android:background="@drawable/radio_selector"
+            android:button="@android:color/transparent"
             android:checked="true"
-            android:text="@string/bussi" />
+            android:drawableStart="@drawable/ic_baseline_bus_big"
+            android:elevation="4dp"
+            android:text="@string/bussi"
+            android:textAlignment="center"
+            android:textColor="@drawable/text_color"
+            android:textSize="30sp" />
 
         <RadioButton
             android:id="@+id/radioButtonRaitsikka"
-            android:layout_width="wrap_content"
+            android:layout_width="160dp"
             android:layout_height="wrap_content"
-            android:layout_weight="1"
-            android:text="@string/raitsikka" />
+            android:layout_marginStart="16dp"
+            android:background="@drawable/radio_selector"
+            android:button="@android:color/transparent"
+            android:drawableStart="@drawable/ic_baseline_tram_big"
+            android:elevation="4dp"
+            android:text="@string/raitsikka"
+            android:textAlignment="center"
+            android:textColor="@drawable/text_color"
+            android:textSize="30sp" />
     </RadioGroup>
 
     <Button
@@ -43,19 +56,16 @@
         android:layout_marginEnd="16dp"
         android:layout_marginBottom="24dp"
         android:text="@string/add_new"
-
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent" />
 
     <TextView
-        android:id="@+id/textViewTop"
+        android:id="@+id/textViewChooseVehicle"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_marginStart="16dp"
-        android:layout_marginTop="124dp"
-        android:layout_marginEnd="16dp"
-        android:text="@string/welcome_new_activity"
+        android:layout_marginTop="50dp"
+        android:text="@string/chooseVehicle"
         android:textSize="30sp"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
@@ -65,9 +75,10 @@
         android:id="@+id/textViewDate"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
+        android:layout_marginStart="24dp"
         android:text="@string/date"
         app:layout_constraintBaseline_toBaselineOf="@+id/textViewSetDate"
-        app:layout_constraintStart_toStartOf="@+id/radioGroup" />
+        app:layout_constraintStart_toStartOf="parent" />
 
     <TextView
         android:id="@+id/textViewTime"
@@ -86,7 +97,8 @@
         android:layout_marginEnd="24dp"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toEndOf="@+id/textViewDate"
-        app:layout_constraintTop_toBottomOf="@+id/radioGroup" />
+        app:layout_constraintTop_toBottomOf="@+id/radioGroup"
+        style="@style/Widget.MaterialComponents.TextInputLayout.OutlinedBox"/>
 
     <TextView
         android:id="@+id/textViewSetTime"

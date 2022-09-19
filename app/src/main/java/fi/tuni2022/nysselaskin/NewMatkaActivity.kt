@@ -54,7 +54,7 @@ class NewMatkaActivity : AppCompatActivity() {
         }
 
         datePicker.addOnPositiveButtonClickListener {
-            setDate.text = datePicker.selection?.let { it1 -> convertLongToTime(it1) }
+            setDate.text = datePicker.selection?.let { it1 -> convertLongToDate(it1) }
         }
 
         val timePicker =
@@ -80,11 +80,13 @@ class NewMatkaActivity : AppCompatActivity() {
                 setResult(Activity.RESULT_CANCELED, replyIntent)
             } else {
                 val typeID = buttonGroup.checkedRadioButtonId
-                Log.d(TAG, typeID.toString())
 
+                val name = resources.getResourceName(typeID)
                 val date = setTime.text.toString() + " " + setDate.text.toString()
-                Log.d(TAG, date)
-                val newJourney = "$date;Bussi"
+
+                val price = stringToDate(date)?.let { it1 -> calculateSingleTicketPrice(it1) }
+
+                val newJourney = "$date;$name;A-B;$price"
                 replyIntent.putExtra("JOURNEY", newJourney)
                 setResult(Activity.RESULT_OK, replyIntent)
             }

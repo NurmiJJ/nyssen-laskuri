@@ -9,4 +9,34 @@
     <string name="time">Kellonaika</string>
     <string name="chooseVehicle">Millä liikut tänään?</string>
     <string name="deleteOne">Poista valittu matka</string>
+    <string name="title_activity_settings">SettingsActivity</string>
+    <string name="settings">Asetukset</string>
+
+    <!-- Preference Titles -->
+    <string name="ticket_header">Liput</string>
+    <string name="sync_header">Sync</string>
+
+    <!-- Customers Types -->
+    <string name="adults">Aikuinen</string>
+    <string name="youth">Nuori</string>
+    <string name="children">Lapsi</string>
+
+    <!-- Duration Types -->
+    <string name="month">30 päivää</string>
+    <string name="quarter">90 päivää</string>
+    <string name="year">360 päivää</string>
+
+    <!-- Messages Preferences -->
+    <string name="signature_title">Your signature</string>
+    <string name="reply_title">Default reply action</string>
+
+    <!-- Sync Preferences -->
+    <string name="sync_title">Sync email periodically</string>
+    <string name="attachment_title">Download incoming attachments</string>
+    <string name="attachment_summary_on">Automatically download attachments for incoming emails
+    </string>
+    <string name="attachment_summary_off">Only download attachments when manually requested</string>
+
+    <string name="customer_title">Matkustajaryhmä</string>
+    <string name="duration_title">Kauden pituus</string>
 </resources>

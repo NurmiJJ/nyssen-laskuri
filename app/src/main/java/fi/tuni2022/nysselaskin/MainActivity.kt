@@ -5,24 +5,28 @@ import android.app.Activity
 import android.app.AlertDialog
 import android.content.DialogInterface
 import android.content.Intent
-import androidx.appcompat.app.AppCompatActivity
+import android.content.SharedPreferences
 import android.os.Bundle
+import android.os.PersistableBundle
 import android.util.Log
 import android.widget.Button
 import android.widget.TextView
 import androidx.activity.result.contract.ActivityResultContracts
+import androidx.appcompat.app.AppCompatActivity
+import androidx.preference.PreferenceManager
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
+import com.google.android.material.appbar.MaterialToolbar
 import com.google.android.material.floatingactionbutton.FloatingActionButton
 import com.google.firebase.auth.FirebaseAuth
 import com.google.firebase.firestore.ktx.firestore
 import com.google.firebase.ktx.Firebase
-import kotlin.collections.ArrayList
+
 
 const val TAG = "Nyssesofta"
 const val collection : String = "Journeys"
 
-class MainActivity : AppCompatActivity() {
+class MainActivity : AppCompatActivity(), SharedPreferences.OnSharedPreferenceChangeListener{
 
     private lateinit var auth: FirebaseAuth
     private val database = Firebase.firestore
@@ -30,19 +34,35 @@ class MainActivity : AppCompatActivity() {
     private var allJourneys: ArrayList<Matka> = ArrayList()
     private val adapter = MatkaListAdapter(allJourneys)
 
-    private lateinit var total: TextView
+    lateinit var sharedPreferences: SharedPreferences
+
+    private lateinit var totalView: TextView
+    private lateinit var customerView: TextView
+    private lateinit var durationView: TextView
+
+    private val listener: SharedPreferences.OnSharedPreferenceChangeListener =
+        SharedPreferences.OnSharedPreferenceChangeListener { pref, key ->
+            onSharedPreferenceChanged(pref, key)
+        }
+
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_main)
 
+        sharedPreferences = PreferenceManager.getDefaultSharedPreferences(this)
+        sharedPreferences.registerOnSharedPreferenceChangeListener(this)
+
         val recyclerView = findViewById<RecyclerView>(R.id.recyclerview)
         recyclerView.adapter = adapter
         recyclerView.layoutManager = LinearLayoutManager(this)
 
+        totalView = findViewById(R.id.textViewTotal)
+        durationView = findViewById(R.id.textViewDuration)
+        customerView = findViewById(R.id.textViewCustomer)
+
         //auth = Firebase.auth
         updateDatabase()
-        total = findViewById(R.id.textViewTotal)
 
         val fab = findViewById<FloatingActionButton>(R.id.fab)
         fab.setOnClickListener {
@@ -66,7 +86,43 @@ class MainActivity : AppCompatActivity() {
                     .setNegativeButton(android.R.string.no, null).show()
             }
         }
+
+        val topAppBar = findViewById<MaterialToolbar>(R.id.topAppBar)
+        topAppBar.setOnMenuItemClickListener { menuItem ->
+            when (menuItem.itemId) {
+                R.id.action_settings -> {
+                    Log.d(TAG, "Settings painettu")
+                    val intent = Intent(this@MainActivity, SettingsActivity::class.java)
+                    startActivity(intent)
+                    true
+                }
+
+                else -> false
+            }
+        }
     }
+
+    override fun onResume() {
+        super.onResume()
+        sharedPreferences.registerOnSharedPreferenceChangeListener(listener)
+    }
+
+    override fun onPause() {
+        super.onPause()
+        sharedPreferences.unregisterOnSharedPreferenceChangeListener(listener)
+    }
+
+    /*
+    private var settingsLauncher = registerForActivityResult(
+        ActivityResultContracts.StartActivityForResult()
+    ) { result ->
+            customer.text = "aikuinen"
+        if (result.resultCode == Activity.RESULT_OK) {
+
+        }
+    }
+
+     */
 
     private var resultLauncher = registerForActivityResult(
         ActivityResultContracts.StartActivityForResult()
@@ -121,7 +177,7 @@ class MainActivity : AppCompatActivity() {
 
                 }
                 adapter.notifyDataSetChanged()
-                total.text = allJourneys.size.toString()
+                totalView.text = allJourneys.size.toString()
             }
     }
 
@@ -140,4 +196,14 @@ class MainActivity : AppCompatActivity() {
                 Log.d(TAG, "get failed with ", exception)
             }
     }
+
+    override fun onSharedPreferenceChanged(sharedPreferences: SharedPreferences, key: String) {
+        if (key == "customer") {
+            customerView.text = sharedPreferences.getString(key , "")
+        }
+        if (key == "duration") {
+            durationView.text = sharedPreferences.getString(key , "")
+        }
+    }
+
 }

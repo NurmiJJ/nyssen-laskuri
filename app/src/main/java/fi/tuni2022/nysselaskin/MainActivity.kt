@@ -6,13 +6,17 @@ import android.app.AlertDialog
 import android.content.DialogInterface
 import android.content.Intent
 import android.content.SharedPreferences
+import android.content.pm.ActivityInfo
 import android.os.Bundle
 import android.os.PersistableBundle
 import android.util.Log
 import android.widget.Button
 import android.widget.TextView
 import androidx.activity.result.contract.ActivityResultContracts
+import androidx.activity.viewModels
 import androidx.appcompat.app.AppCompatActivity
+import androidx.lifecycle.Observer
+import androidx.lifecycle.ViewModelProvider
 import androidx.preference.PreferenceManager
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
@@ -21,6 +25,7 @@ import com.google.android.material.floatingactionbutton.FloatingActionButton
 import com.google.firebase.auth.FirebaseAuth
 import com.google.firebase.firestore.ktx.firestore
 import com.google.firebase.ktx.Firebase
+import kotlin.math.roundToInt
 
 
 const val TAG = "Nyssesofta"
@@ -34,11 +39,16 @@ class MainActivity : AppCompatActivity(), SharedPreferences.OnSharedPreferenceCh
     private var allJourneys: ArrayList<Matka> = ArrayList()
     private val adapter = MatkaListAdapter(allJourneys)
 
-    lateinit var sharedPreferences: SharedPreferences
+    private lateinit var sharedPreferences: SharedPreferences
+    private val model: NysseViewModel by viewModels()
 
     private lateinit var totalView: TextView
+    private lateinit var totalPriceView: TextView
+    private lateinit var neededJourneysView: TextView
+
     private lateinit var customerView: TextView
     private lateinit var durationView: TextView
+    private lateinit var zoneView: TextView
 
     private val listener: SharedPreferences.OnSharedPreferenceChangeListener =
         SharedPreferences.OnSharedPreferenceChangeListener { pref, key ->
@@ -58,11 +68,36 @@ class MainActivity : AppCompatActivity(), SharedPreferences.OnSharedPreferenceCh
         recyclerView.layoutManager = LinearLayoutManager(this)
 
         totalView = findViewById(R.id.textViewTotal)
+        totalPriceView = findViewById(R.id.textViewTotalPrice)
+        neededJourneysView = findViewById(R.id.textViewNeededJourneys)
+
         durationView = findViewById(R.id.textViewDuration)
         customerView = findViewById(R.id.textViewCustomer)
+        zoneView = findViewById(R.id.textViewZones)
 
         //auth = Firebase.auth
         updateDatabase()
+        updateNeededJourneys()
+
+        val customerObserver = Observer<String> { newCustomer ->
+            customerView.text = newCustomer
+        }
+
+        val durationObserver = Observer<String> { newTicketDuration ->
+            durationView.text = newTicketDuration.toString()
+        }
+
+        val zoneObserver = Observer<String> { newZone ->
+            zoneView.text = newZone.toString()
+        }
+
+        model.customer.observe(this, customerObserver)
+        model.seasonDuration.observe(this, durationObserver)
+        model.zones.observe(this, zoneObserver)
+
+        model.customer.value = sharedPreferences.getString("customer", "")
+        model.seasonDuration.value = sharedPreferences.getString("duration", "")
+        model.zones.value = sharedPreferences.getString("zones", "")
 
         val fab = findViewById<FloatingActionButton>(R.id.fab)
         fab.setOnClickListener {
@@ -112,18 +147,6 @@ class MainActivity : AppCompatActivity(), SharedPreferences.OnSharedPreferenceCh
         sharedPreferences.unregisterOnSharedPreferenceChangeListener(listener)
     }
 
-    /*
-    private var settingsLauncher = registerForActivityResult(
-        ActivityResultContracts.StartActivityForResult()
-    ) { result ->
-            customer.text = "aikuinen"
-        if (result.resultCode == Activity.RESULT_OK) {
-
-        }
-    }
-
-     */
-
     private var resultLauncher = registerForActivityResult(
         ActivityResultContracts.StartActivityForResult()
     ) { result ->
@@ -139,10 +162,9 @@ class MainActivity : AppCompatActivity(), SharedPreferences.OnSharedPreferenceCh
                 Log.d(TAG, split[0])
                 val date = stringToDate(split[0])
                 val type = split[1]
-                val zone = split[2]
-                val price = split[3].toDouble()
+                val nightFare = split[2].toBoolean()
                 if (date != null) {
-                    addToDatabase(Matka(date, type, zone, price))
+                    addToDatabase(Matka(date, type, nightFare))
                 }
             }
         }
@@ -158,6 +180,25 @@ class MainActivity : AppCompatActivity(), SharedPreferences.OnSharedPreferenceCh
             .addOnFailureListener { e ->
                 Log.w(TAG, "Error adding document", e)
             }
+    }
+
+    @SuppressLint("SetTextI18n")
+    private fun updatePrice() {
+        var totalPrice = 0.0
+        val customer = CUSTOMERS[sharedPreferences.getString("customer", "")].toString()
+        val zone = sharedPreferences.getString("zones", "").toString().toInt()
+        val singlePrice = getSinglePrice(customer, zone)
+
+        Log.d(TAG, totalPrice.toString())
+        for (journey in allJourneys){
+            totalPrice += singlePrice
+            if (journey.nightFare){
+                totalPrice += NIGHT_FARE
+            }
+            Log.d(TAG, totalPrice.toString())
+        }
+
+        totalPriceView.text = convertDoubleToPrice(totalPrice)
     }
 
     @SuppressLint("NotifyDataSetChanged")
@@ -178,6 +219,7 @@ class MainActivity : AppCompatActivity(), SharedPreferences.OnSharedPreferenceCh
                 }
                 adapter.notifyDataSetChanged()
                 totalView.text = allJourneys.size.toString()
+                updatePrice()
             }
     }
 
@@ -197,13 +239,34 @@ class MainActivity : AppCompatActivity(), SharedPreferences.OnSharedPreferenceCh
             }
     }
 
+    private fun updateNeededJourneys(){
+        val customerType = CUSTOMERS[sharedPreferences.getString("customer", "")].toString()
+        val seasonDuration = sharedPreferences.getString("duration", "").toString().toInt()
+        val zones = sharedPreferences.getString("zones", "").toString().toInt()
+
+        val seasonPrice = getSeasonPrice(customerType, zones, seasonDuration)
+        val singleTicketPrice = getSinglePrice(customerType, zones)
+
+        val ticket = (seasonPrice / singleTicketPrice).roundToInt()
+
+        neededJourneysView.text = ticket.toString()
+    }
+
     override fun onSharedPreferenceChanged(sharedPreferences: SharedPreferences, key: String) {
+        val text = sharedPreferences.getString(key, "").toString()
+        updateNeededJourneys()
+        updatePrice()
+
         if (key == "customer") {
-            customerView.text = sharedPreferences.getString(key , "")
+            model.customer.value = text
         }
         if (key == "duration") {
-            durationView.text = sharedPreferences.getString(key , "")
+            model.seasonDuration.value = text
         }
+        if (key == "zones") {
+            model.zones.value = text
+        }
+
     }
 
 }

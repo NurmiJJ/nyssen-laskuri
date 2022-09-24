@@ -46,16 +46,45 @@
         app:layout_constraintEnd_toEndOf="parent" />
 
     <TextView
+        android:id="@+id/textViewSlash"
+        android:layout_width="85dp"
+        android:layout_height="102dp"
+        android:layout_marginEnd="16dp"
+        android:gravity="center"
+        android:text="/"
+        android:textColor="@color/colorPrimaryDark"
+        android:textSize="100sp"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/textViewCustomerTT"
+        tools:ignore="HardcodedText" />
+
+    <TextView
         android:id="@+id/textViewTotal"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_marginTop="20dp"
+        android:layout_marginTop="32dp"
+        android:layout_marginEnd="48dp"
+        android:gravity="center"
         android:textColor="@color/colorPrimaryDark"
-        android:textSize="70sp"
+        android:textSize="30sp"
         app:layout_constraintBottom_toTopOf="@+id/recyclerview"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/appBarLayout" />
+        app:layout_constraintEnd_toEndOf="@+id/textViewSlash"
+        app:layout_constraintTop_toBottomOf="@+id/appBarLayout"
+        app:layout_constraintVertical_bias="0.255" />
+
+    <TextView
+        android:id="@+id/textViewNeededJourneys"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="32dp"
+        android:layout_marginStart="48dp"
+        android:gravity="center"
+        android:textColor="@color/colorPrimaryDark"
+        android:textSize="30sp"
+        app:layout_constraintBottom_toTopOf="@+id/recyclerview"
+        app:layout_constraintStart_toStartOf="@+id/textViewSlash"
+        app:layout_constraintTop_toBottomOf="@+id/appBarLayout"
+        app:layout_constraintVertical_bias="0.755" />
 
     <Button
         android:id="@+id/buttonDeleteOne"
@@ -70,18 +99,85 @@
         android:id="@+id/textViewDuration"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_marginTop="16dp"
-        android:layout_marginEnd="24dp"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/appBarLayout" />
+        android:layout_marginStart="3dp"
+        app:layout_constraintStart_toEndOf="@+id/textViewSeasonTT"
+        app:layout_constraintTop_toTopOf="@+id/textViewSeasonTT" />
 
     <TextView
         android:id="@+id/textViewCustomer"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_marginTop="8dp"
-        android:layout_marginEnd="24dp"
+        android:layout_marginStart="3dp"
+        app:layout_constraintStart_toEndOf="@+id/textViewCustomerTT"
+        app:layout_constraintTop_toTopOf="@+id/textViewSeasonTT" />
+
+    <TextView
+        android:id="@+id/textViewZones"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginStart="3dp"
+        app:layout_constraintStart_toEndOf="@+id/textViewZoneTT"
+        app:layout_constraintTop_toTopOf="@+id/textViewZoneTT" />
+
+    <TextView
+        android:id="@+id/textViewFareTitle"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="195dp"
+        android:layout_marginEnd="20dp"
+        android:text="@string/nightFareTitle"
         app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/textViewDuration" />
+        app:layout_constraintTop_toTopOf="parent" />
+
+    <TextView
+        android:id="@+id/textViewJourneyDateTitle"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginStart="56dp"
+        android:layout_marginTop="195dp"
+        android:text="@string/journeyDateTitle"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent" />
+
+    <TextView
+        android:id="@+id/textViewTotalPrice"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginStart="32dp"
+        android:layout_marginBottom="20dp"
+        android:textColor="@color/colorPrimaryDark"
+        android:textSize="50sp"
+        app:layout_constraintBottom_toTopOf="@+id/recyclerview"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/textViewSeasonTT" />
+
+    <TextView
+        android:id="@+id/textViewSeasonTT"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginStart="8dp"
+        android:layout_marginTop="8dp"
+        android:text="@string/seasonDurationTitle"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/appBarLayout" />
+
+    <TextView
+        android:id="@+id/textViewZoneTT"
+        android:layout_width="0dp"
+        android:layout_height="wrap_content"
+        android:layout_marginStart="8dp"
+        android:text="@string/zonesTitle"
+        app:layout_constraintStart_toEndOf="@+id/textViewDuration"
+        app:layout_constraintTop_toTopOf="@+id/textViewSeasonTT" />
+
+    <TextView
+        android:id="@+id/textViewCustomerTT"
+        android:layout_width="0dp"
+        android:layout_height="wrap_content"
+        android:layout_marginStart="8dp"
+        android:text="@string/customerTitle"
+        app:layout_constraintStart_toEndOf="@+id/textViewZones"
+        app:layout_constraintTop_toTopOf="@+id/textViewSeasonTT" />
+
 
 </androidx.constraintlayout.widget.ConstraintLayout>

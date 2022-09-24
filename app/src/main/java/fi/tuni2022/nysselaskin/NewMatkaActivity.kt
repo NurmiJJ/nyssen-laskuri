@@ -2,25 +2,17 @@ package fi.tuni2022.nysselaskin
 
 import android.app.Activity
 import android.content.Intent
-import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
 import android.text.TextUtils
-import android.util.Log
 import android.widget.Button
-import android.widget.EditText
 import android.widget.RadioGroup
 import android.widget.TextView
+import androidx.appcompat.app.AppCompatActivity
 import com.google.android.material.datepicker.CalendarConstraints
 import com.google.android.material.datepicker.DateValidatorPointBackward
 import com.google.android.material.datepicker.MaterialDatePicker
 import com.google.android.material.timepicker.MaterialTimePicker
 import com.google.android.material.timepicker.TimeFormat
-import org.w3c.dom.Text
-import java.text.DateFormat
-import java.text.SimpleDateFormat
-import java.time.Instant
-import java.util.*
-import kotlin.time.Duration.Companion.days
 
 class NewMatkaActivity : AppCompatActivity() {
 
@@ -84,9 +76,9 @@ class NewMatkaActivity : AppCompatActivity() {
                 val name = resources.getResourceName(typeID)
                 val date = setTime.text.toString() + " " + setDate.text.toString()
 
-                val price = stringToDate(date)?.let { it1 -> calculateSingleTicketPrice(it1) }
+                val nightFare = stringToDate(date)?.let { it1 -> isNightFare(it1) }
 
-                val newJourney = "$date;$name;A-B;$price"
+                val newJourney = "$date;$name;$nightFare"
                 replyIntent.putExtra("JOURNEY", newJourney)
                 setResult(Activity.RESULT_OK, replyIntent)
             }

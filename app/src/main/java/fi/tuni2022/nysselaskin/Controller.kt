@@ -1,8 +1,13 @@
 package fi.tuni2022.nysselaskin
 
+import android.util.Log
 import java.util.*
 
 const val NIGHT_FARE = 3.0
+const val MONTH = 30
+const val YEAR = 360
+
+val CUSTOMERS = mapOf<String, String>("Aikuinen" to "adult", "Nuori" to "youth", "Lapsi" to "children")
 
 fun vehicleIcon(vehicle: String): Int {
     if (vehicle == "fi.tuni2022.nysselaskin:id/radioButtonBussi") {
@@ -13,19 +18,64 @@ fun vehicleIcon(vehicle: String): Int {
     return 0
 }
 
-fun calculateSingleTicketPrice(date: Date): Double {
+fun isNightFare(date: Date): Boolean {
     val calendar = Calendar.getInstance()
     calendar.time = date
-    val hours = calendar.get(Calendar.HOUR)
+    val hours = calendar.get(Calendar.HOUR_OF_DAY)
     val minutes = calendar.get(Calendar.MINUTE)
 
-    var price = 2.7
+    var nightFare = false
 
     if (hours < 4) {
-        price += NIGHT_FARE
+        nightFare = true
     } else if (hours == 4 && minutes <= 40) {
-        price += NIGHT_FARE
+        nightFare = true
     }
 
-    return price
+    return nightFare
 }
+
+fun getSinglePrice(customer: String, zones: Int): Double {
+    val list = TicketPrices.getValue(customer)
+    return list[0][zones-2]
+}
+
+fun getSeasonPrice(customer: String, zones: Int, duration: Int): Double{
+    val list = TicketPrices.getValue(customer)
+    return list[seasonDurationToInt(duration)][zones-2]
+}
+
+fun convertDoubleToPrice(value: Double): String {
+    return String.format("%.2f", value).replace(".", ",") + " €"
+}
+
+fun seasonDurationToInt(seasonDuration: Int): Int {
+    var value = 0
+    
+    if(seasonDuration == MONTH) {
+        value = 1
+    } else if (seasonDuration == YEAR) {
+        value = 2
+    }
+    return value
+}
+    private val adult: List<List<Double>> = listOf(
+        listOf(2.10, 3.40, 4.60, 5.90, 7.20),
+        listOf(56.0, 73.0, 83.0, 105.0, 115.0),
+        listOf(395.0, 555.0, 660.0, 760.0, 860.0))
+
+    private val youth: List<List<Double>> = listOf(
+        listOf(1.52, 2.42, 3.30, 4.25, 5.10),
+        listOf(39.0, 51.0, 58.0, 73.00, 81.00),
+        listOf(280.0, 390.0, 465.0, 540.0, 615.0),
+        )
+
+    private val children: List<List<Double>> = listOf(
+        listOf(1.05, 1.70, 2.30, 2.95, 3.60),
+        listOf(28.0, 36.5, 41.5, 52.5, 57.5),
+        listOf(198.0, 287.0, 330.0, 380.0, 430.0),
+    )
+
+    private val TicketPrices: Map<String, List<List<Double>>> = mapOf("adult" to adult, "youth" to youth, "children" to children)
+
+

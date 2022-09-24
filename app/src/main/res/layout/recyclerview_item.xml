@@ -23,12 +23,12 @@
         android:background="@color/colorAccent"
         android:gravity="center_vertical"
         android:textSize="15sp"
-        app:layout_constraintEnd_toStartOf="@+id/textViewZones"
+        app:layout_constraintEnd_toStartOf="@+id/textViewNightFare"
         app:layout_constraintStart_toEndOf="@+id/textViewType"
         app:layout_constraintTop_toTopOf="@+id/textViewType" />
 
     <TextView
-        android:id="@+id/textViewZones"
+        android:id="@+id/textViewNightFare"
         android:layout_width="50dp"
         android:layout_height="30dp"
         android:layout_marginStart="8dp"

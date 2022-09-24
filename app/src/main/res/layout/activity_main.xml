@@ -35,6 +35,14 @@
         app:layout_constraintTop_toTopOf="parent"
         tools:listitem="@layout/recyclerview_item" />
 
+    <View
+        android:layout_width="match_parent"
+        android:layout_height="1dp"
+        android:layout_marginTop="190dp"
+        android:background="@android:color/darker_gray"
+        app:layout_constraintTop_toTopOf="parent"
+        tools:layout_editor_absoluteX="-16dp" />
+
     <com.google.android.material.floatingactionbutton.FloatingActionButton
         android:id="@+id/fab"
         android:layout_width="wrap_content"
@@ -49,20 +57,21 @@
         android:id="@+id/textViewSlash"
         android:layout_width="85dp"
         android:layout_height="102dp"
+        android:layout_marginTop="8dp"
         android:layout_marginEnd="16dp"
         android:gravity="center"
         android:text="/"
         android:textColor="@color/colorPrimaryDark"
         android:textSize="100sp"
         app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/textViewCustomerTT"
+        app:layout_constraintTop_toBottomOf="@+id/appBarLayout"
         tools:ignore="HardcodedText" />
 
     <TextView
         android:id="@+id/textViewTotal"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_marginTop="32dp"
+        android:layout_marginTop="8dp"
         android:layout_marginEnd="48dp"
         android:gravity="center"
         android:textColor="@color/colorPrimaryDark"
@@ -76,7 +85,6 @@
         android:id="@+id/textViewNeededJourneys"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_marginTop="32dp"
         android:layout_marginStart="48dp"
         android:gravity="center"
         android:textColor="@color/colorPrimaryDark"
@@ -84,7 +92,7 @@
         app:layout_constraintBottom_toTopOf="@+id/recyclerview"
         app:layout_constraintStart_toStartOf="@+id/textViewSlash"
         app:layout_constraintTop_toBottomOf="@+id/appBarLayout"
-        app:layout_constraintVertical_bias="0.755" />
+        app:layout_constraintVertical_bias="0.655" />
 
     <Button
         android:id="@+id/buttonDeleteOne"
@@ -144,10 +152,9 @@
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_marginStart="32dp"
-        android:layout_marginBottom="20dp"
+        android:layout_marginTop="20dp"
         android:textColor="@color/colorPrimaryDark"
         android:textSize="50sp"
-        app:layout_constraintBottom_toTopOf="@+id/recyclerview"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toBottomOf="@+id/textViewSeasonTT" />
 
@@ -179,5 +186,25 @@
         app:layout_constraintStart_toEndOf="@+id/textViewZones"
         app:layout_constraintTop_toTopOf="@+id/textViewSeasonTT" />
 
+    <TextView
+        android:id="@+id/textViewPriceTitle"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="Maksut kauden alusta"
+        app:layout_constraintStart_toStartOf="@+id/textViewTotalPrice"
+        app:layout_constraintTop_toBottomOf="@+id/textViewTotalPrice" />
+
+    <TextView
+        android:id="@+id/textViewHello"
+        android:layout_width="250dp"
+        android:layout_height="wrap_content"
+        android:gravity="center"
+        android:text="@string/hello"
+        android:textColor="@color/colorPrimary"
+        android:textSize="25sp"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/appBarLayout" />
 
 </androidx.constraintlayout.widget.ConstraintLayout>

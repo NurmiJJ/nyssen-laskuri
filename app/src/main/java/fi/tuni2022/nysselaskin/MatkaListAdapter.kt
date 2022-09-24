@@ -55,6 +55,10 @@ class MatkaListAdapter(private val mList: ArrayList<Matka> ): ListAdapter<Matka,
         return matka
     }
 
+    fun journeyDeleted(){
+        matka = null
+    }
+
     override fun getItemCount() = mList.size
 
     class MatkaComparator : DiffUtil.ItemCallback<Matka>() {

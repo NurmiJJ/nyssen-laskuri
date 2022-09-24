@@ -12,6 +12,9 @@
     <string name="title_activity_settings">SettingsActivity</string>
     <string name="settings">Asetukset</string>
 
+    <string name="deleteDatabase">Tyhjennä tietokanta</string>
+    <string name="hello">Lisää + painikkeesta uusi matka!</string>
+
     <!-- UI Titles -->
     <string name="nightFareTitle">Yölisä?</string>
     <string name="journeyDateTitle">Matkan päivämäärä</string>
@@ -23,7 +26,7 @@
 
     <!-- Preference Titles -->
     <string name="ticket_header">Liput</string>
-    <string name="sync_header">Sync</string>
+    <string name="database_header">Tietokanta</string>
 
     <!-- Customers Types -->
     <string name="adults">Aikuinen</string>
@@ -55,4 +58,7 @@
     <string name="customer_title_settings">Matkustajaryhmä</string>
     <string name="duration_title_settings">Kauden pituus</string>
     <string name="zones_title_settings">Kausilipun vyöhykkeiden määrä</string>
+    <string name="LogInInfo">Kirjaudu tietokantaan</string>
+    <string name="LogIn">Kirjaudu sisään</string>
+
 </resources>

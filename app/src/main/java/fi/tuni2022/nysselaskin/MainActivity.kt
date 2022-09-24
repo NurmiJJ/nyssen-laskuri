@@ -6,9 +6,7 @@ import android.app.AlertDialog
 import android.content.DialogInterface
 import android.content.Intent
 import android.content.SharedPreferences
-import android.content.pm.ActivityInfo
 import android.os.Bundle
-import android.os.PersistableBundle
 import android.util.Log
 import android.widget.Button
 import android.widget.TextView
@@ -16,7 +14,6 @@ import androidx.activity.result.contract.ActivityResultContracts
 import androidx.activity.viewModels
 import androidx.appcompat.app.AppCompatActivity
 import androidx.lifecycle.Observer
-import androidx.lifecycle.ViewModelProvider
 import androidx.preference.PreferenceManager
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
@@ -25,13 +22,15 @@ import com.google.android.material.floatingactionbutton.FloatingActionButton
 import com.google.firebase.auth.FirebaseAuth
 import com.google.firebase.firestore.ktx.firestore
 import com.google.firebase.ktx.Firebase
+import org.w3c.dom.Text
+import java.util.*
 import kotlin.math.roundToInt
 
 
 const val TAG = "Nyssesofta"
 const val collection : String = "Journeys"
 
-class MainActivity : AppCompatActivity(), SharedPreferences.OnSharedPreferenceChangeListener{
+class MainActivity : AppCompatActivity(),   SharedPreferences.OnSharedPreferenceChangeListener{
 
     private lateinit var auth: FirebaseAuth
     private val database = Firebase.firestore
@@ -50,11 +49,21 @@ class MainActivity : AppCompatActivity(), SharedPreferences.OnSharedPreferenceCh
     private lateinit var durationView: TextView
     private lateinit var zoneView: TextView
 
+    private lateinit var journeyDateTitle: TextView
+    private lateinit var nigthFareTitle: TextView
+    private lateinit var helloView: TextView
+
+
     private val listener: SharedPreferences.OnSharedPreferenceChangeListener =
         SharedPreferences.OnSharedPreferenceChangeListener { pref, key ->
             onSharedPreferenceChanged(pref, key)
         }
 
+    class Compare: Comparator<Matka>{
+        override fun compare(p0: Matka, p1: Matka): Int {
+            return p1.date!!.compareTo(p0.date)
+        }
+    }
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -74,6 +83,10 @@ class MainActivity : AppCompatActivity(), SharedPreferences.OnSharedPreferenceCh
         durationView = findViewById(R.id.textViewDuration)
         customerView = findViewById(R.id.textViewCustomer)
         zoneView = findViewById(R.id.textViewZones)
+
+        journeyDateTitle = findViewById(R.id.textViewJourneyDateTitle)
+        nigthFareTitle = findViewById(R.id.textViewFareTitle)
+        helloView = findViewById(R.id.textViewHello)
 
         //auth = Firebase.auth
         updateDatabase()
@@ -126,15 +139,24 @@ class MainActivity : AppCompatActivity(), SharedPreferences.OnSharedPreferenceCh
         topAppBar.setOnMenuItemClickListener { menuItem ->
             when (menuItem.itemId) {
                 R.id.action_settings -> {
-                    Log.d(TAG, "Settings painettu")
                     val intent = Intent(this@MainActivity, SettingsActivity::class.java)
                     startActivity(intent)
+                    true
+                }
+                R.id.Log -> {
+                    TODO()
+                    true
+                }
+                R.id.delete -> {
+                    deleteDatabase()
                     true
                 }
 
                 else -> false
             }
         }
+
+
     }
 
     override fun onResume() {
@@ -217,9 +239,11 @@ class MainActivity : AppCompatActivity(), SharedPreferences.OnSharedPreferenceCh
                     Log.w(TAG, matka.toString())
 
                 }
+                Collections.sort(allJourneys, Compare())
                 adapter.notifyDataSetChanged()
                 totalView.text = allJourneys.size.toString()
                 updatePrice()
+                startScreen()
             }
     }
 
@@ -233,10 +257,50 @@ class MainActivity : AppCompatActivity(), SharedPreferences.OnSharedPreferenceCh
                         doc.reference.delete()
                     }
                 }
+                adapter.journeyDeleted()
             }
             .addOnFailureListener { exception ->
                 Log.d(TAG, "get failed with ", exception)
             }
+    }
+
+    private fun deleteDatabase() {
+        AlertDialog.Builder(this)
+            .setTitle("Delete Journey")
+            .setMessage("Do you really want to delete your database ?")
+            .setIcon(android.R.drawable.ic_delete)
+            .setPositiveButton(android.R.string.yes,
+                DialogInterface.OnClickListener { dialog, whichButton ->
+                    database.collection(collection)
+                        .get()
+                        .addOnSuccessListener {value ->
+                            if (value != null) {
+                                for (doc in value) {
+                                    doc.reference.delete()
+                                }
+                                adapter.journeyDeleted()
+                            }
+                        }
+                        .addOnFailureListener { exception ->
+                            Log.d(TAG, "get failed with ", exception)
+                        }
+                })
+            .setNegativeButton(android.R.string.no, null).show()
+
+    }
+
+    private fun startScreen(){
+        if (adapter.itemCount == 0) {
+            nigthFareTitle.visibility = TextView.INVISIBLE
+            journeyDateTitle.visibility = TextView.INVISIBLE
+
+            helloView.visibility = TextView.VISIBLE
+        } else {
+            nigthFareTitle.visibility = TextView.VISIBLE
+            journeyDateTitle.visibility = TextView.VISIBLE
+
+            helloView.visibility = TextView.INVISIBLE
+        }
     }
 
     private fun updateNeededJourneys(){
@@ -257,6 +321,9 @@ class MainActivity : AppCompatActivity(), SharedPreferences.OnSharedPreferenceCh
         updateNeededJourneys()
         updatePrice()
 
+        if (key == getString(R.string.deleteDatabase)) {
+            Log.d(TAG, "Nappia painettu")
+        }
         if (key == "customer") {
             model.customer.value = text
         }

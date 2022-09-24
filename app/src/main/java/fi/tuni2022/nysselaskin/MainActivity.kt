@@ -17,12 +17,15 @@ import androidx.lifecycle.Observer
 import androidx.preference.PreferenceManager
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
+import com.firebase.ui.auth.AuthUI
+import com.firebase.ui.auth.FirebaseAuthUIActivityResultContract
+import com.firebase.ui.auth.data.model.FirebaseAuthUIAuthenticationResult
 import com.google.android.material.appbar.MaterialToolbar
 import com.google.android.material.floatingactionbutton.FloatingActionButton
 import com.google.firebase.auth.FirebaseAuth
+import com.google.firebase.auth.ktx.auth
 import com.google.firebase.firestore.ktx.firestore
 import com.google.firebase.ktx.Firebase
-import org.w3c.dom.Text
 import java.util.*
 import kotlin.math.roundToInt
 
@@ -32,14 +35,17 @@ const val collection : String = "Journeys"
 
 class MainActivity : AppCompatActivity(),   SharedPreferences.OnSharedPreferenceChangeListener{
 
-    private lateinit var auth: FirebaseAuth
     private val database = Firebase.firestore
+    private lateinit var auth: FirebaseAuth
 
     private var allJourneys: ArrayList<Matka> = ArrayList()
     private val adapter = MatkaListAdapter(allJourneys)
 
     private lateinit var sharedPreferences: SharedPreferences
     private val model: NysseViewModel by viewModels()
+
+    private lateinit var fab: FloatingActionButton
+    private lateinit var topAppBar: MaterialToolbar
 
     private lateinit var totalView: TextView
     private lateinit var totalPriceView: TextView
@@ -50,7 +56,7 @@ class MainActivity : AppCompatActivity(),   SharedPreferences.OnSharedPreference
     private lateinit var zoneView: TextView
 
     private lateinit var journeyDateTitle: TextView
-    private lateinit var nigthFareTitle: TextView
+    private lateinit var nightFareTitle: TextView
     private lateinit var helloView: TextView
 
 
@@ -69,6 +75,8 @@ class MainActivity : AppCompatActivity(),   SharedPreferences.OnSharedPreference
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_main)
 
+        auth = Firebase.auth
+
         sharedPreferences = PreferenceManager.getDefaultSharedPreferences(this)
         sharedPreferences.registerOnSharedPreferenceChangeListener(this)
 
@@ -85,11 +93,9 @@ class MainActivity : AppCompatActivity(),   SharedPreferences.OnSharedPreference
         zoneView = findViewById(R.id.textViewZones)
 
         journeyDateTitle = findViewById(R.id.textViewJourneyDateTitle)
-        nigthFareTitle = findViewById(R.id.textViewFareTitle)
+        nightFareTitle = findViewById(R.id.textViewFareTitle)
         helloView = findViewById(R.id.textViewHello)
 
-        //auth = Firebase.auth
-        updateDatabase()
         updateNeededJourneys()
 
         val customerObserver = Observer<String> { newCustomer ->
@@ -112,7 +118,7 @@ class MainActivity : AppCompatActivity(),   SharedPreferences.OnSharedPreference
         model.seasonDuration.value = sharedPreferences.getString("duration", "")
         model.zones.value = sharedPreferences.getString("zones", "")
 
-        val fab = findViewById<FloatingActionButton>(R.id.fab)
+        fab = findViewById(R.id.fab)
         fab.setOnClickListener {
             val intent = Intent(this@MainActivity, NewMatkaActivity::class.java)
             resultLauncher.launch(intent)
@@ -135,7 +141,7 @@ class MainActivity : AppCompatActivity(),   SharedPreferences.OnSharedPreference
             }
         }
 
-        val topAppBar = findViewById<MaterialToolbar>(R.id.topAppBar)
+        topAppBar = findViewById(R.id.topAppBar)
         topAppBar.setOnMenuItemClickListener { menuItem ->
             when (menuItem.itemId) {
                 R.id.action_settings -> {
@@ -144,7 +150,7 @@ class MainActivity : AppCompatActivity(),   SharedPreferences.OnSharedPreference
                     true
                 }
                 R.id.Log -> {
-                    TODO()
+                    singInOut()
                     true
                 }
                 R.id.delete -> {
@@ -155,8 +161,15 @@ class MainActivity : AppCompatActivity(),   SharedPreferences.OnSharedPreference
                 else -> false
             }
         }
+    }
 
-
+    override fun onStart() {
+        super.onStart()
+        if (auth.currentUser != null){
+            Log.d(TAG, "tässä ja nyt")
+            updateDatabase()
+        }
+        //checkUserStatus()
     }
 
     override fun onResume() {
@@ -186,7 +199,7 @@ class MainActivity : AppCompatActivity(),   SharedPreferences.OnSharedPreference
                 val type = split[1]
                 val nightFare = split[2].toBoolean()
                 if (date != null) {
-                    addToDatabase(Matka(date, type, nightFare))
+                    addToDatabase(Matka(date, type, nightFare, auth.currentUser!!.uid))
                 }
             }
         }
@@ -223,9 +236,11 @@ class MainActivity : AppCompatActivity(),   SharedPreferences.OnSharedPreference
         totalPriceView.text = convertDoubleToPrice(totalPrice)
     }
 
+
     @SuppressLint("NotifyDataSetChanged")
     private fun updateDatabase() {
         database.collection(collection)
+            .whereEqualTo("userId", auth.currentUser!!.uid)
             .addSnapshotListener { value, e ->
                 if (e != null) {
                     Log.w(TAG, "Listen failed.", e)
@@ -265,6 +280,7 @@ class MainActivity : AppCompatActivity(),   SharedPreferences.OnSharedPreference
     }
 
     private fun deleteDatabase() {
+        val user = auth.currentUser!!.uid
         AlertDialog.Builder(this)
             .setTitle("Delete Journey")
             .setMessage("Do you really want to delete your database ?")
@@ -272,6 +288,7 @@ class MainActivity : AppCompatActivity(),   SharedPreferences.OnSharedPreference
             .setPositiveButton(android.R.string.yes,
                 DialogInterface.OnClickListener { dialog, whichButton ->
                     database.collection(collection)
+                        .whereEqualTo("userId", user)
                         .get()
                         .addOnSuccessListener {value ->
                             if (value != null) {
@@ -291,12 +308,12 @@ class MainActivity : AppCompatActivity(),   SharedPreferences.OnSharedPreference
 
     private fun startScreen(){
         if (adapter.itemCount == 0) {
-            nigthFareTitle.visibility = TextView.INVISIBLE
+            nightFareTitle.visibility = TextView.INVISIBLE
             journeyDateTitle.visibility = TextView.INVISIBLE
 
             helloView.visibility = TextView.VISIBLE
         } else {
-            nigthFareTitle.visibility = TextView.VISIBLE
+            nightFareTitle.visibility = TextView.VISIBLE
             journeyDateTitle.visibility = TextView.VISIBLE
 
             helloView.visibility = TextView.INVISIBLE
@@ -336,4 +353,72 @@ class MainActivity : AppCompatActivity(),   SharedPreferences.OnSharedPreference
 
     }
 
+    private fun singInOut(){
+        if (auth.currentUser != null) {
+            logOut()
+
+        } else {
+            signInLauncher.launch(signInIntent)
+        }
+    }
+
+    private fun logOut(){
+        AuthUI.getInstance()
+            .signOut(this)
+            .addOnCompleteListener {
+                val num = adapter.itemCount
+                allJourneys.clear()
+                adapter.notifyItemRangeRemoved(0, num)
+
+                checkUserStatus()
+                startScreen()
+                updateNeededJourneys()
+                updatePrice()
+
+                Log.d(TAG, "Uloskirjautuminen onnistui!")
+            }
+            .addOnFailureListener { exception ->
+                Log.d(TAG, "get failed with ", exception)
+            }
+    }
+
+    private fun checkUserStatus(){
+        if(auth.currentUser != null){
+            helloView.text = getString(R.string.hello)
+            fab.isEnabled = true
+            topAppBar.menu.findItem(R.id.Log).title = getString(R.string.LogOut)
+            updateDatabase()
+        } else {
+            helloView.text = getString(R.string.noUser)
+            fab.isEnabled = false
+            topAppBar.menu.findItem(R.id.Log).title = getString(R.string.LogIn)
+        }
+    }
+
+    private val signInLauncher = registerForActivityResult(
+        FirebaseAuthUIActivityResultContract()
+    ) { res ->
+        this.onSignInResult(res)
+    }
+
+    private fun onSignInResult(result: FirebaseAuthUIAuthenticationResult) {
+        if (result.resultCode == RESULT_OK) {
+            // Successfully signed in
+            val user = FirebaseAuth.getInstance().currentUser
+            if (user != null) {
+                checkUserStatus()
+
+            }
+        }
+    }
+
+    private val providers = arrayListOf(
+        AuthUI.IdpConfig.EmailBuilder().build(),
+        AuthUI.IdpConfig.AnonymousBuilder().build())
+
+    // Create and launch sign-in intent
+    private val signInIntent = AuthUI.getInstance()
+        .createSignInIntentBuilder()
+        .setAvailableProviders(providers)
+        .build()
 }

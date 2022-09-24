@@ -14,6 +14,7 @@
 
     <string name="deleteDatabase">Tyhjennä tietokanta</string>
     <string name="hello">Lisää + painikkeesta uusi matka!</string>
+    <string name="noUser">Kirjaudu sisään!</string>
 
     <!-- UI Titles -->
     <string name="nightFareTitle">Yölisä?</string>
@@ -60,5 +61,6 @@
     <string name="zones_title_settings">Kausilipun vyöhykkeiden määrä</string>
     <string name="LogInInfo">Kirjaudu tietokantaan</string>
     <string name="LogIn">Kirjaudu sisään</string>
+    <string name="LogOut">Kirjaudu ulos</string>
 
 </resources>

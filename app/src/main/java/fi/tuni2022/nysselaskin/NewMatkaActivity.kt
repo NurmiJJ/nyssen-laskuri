@@ -83,11 +83,13 @@ class NewMatkaActivity : AppCompatActivity() {
                 val typeID = buttonGroup.checkedRadioButtonId
 
                 val name = resources.getResourceName(typeID)
+                val split: Array<String> = name.split("radioButton").toTypedArray()
+                val type = split[1]
                 val date = setTime.text.toString() + " " + setDate.text.toString()
 
                 val nightFare = stringToDate(date)?.let { it1 -> isNightFare(it1) }
 
-                val newJourney = "$date;$name;$nightFare"
+                val newJourney = "$date;$type;$nightFare"
                 replyIntent.putExtra("JOURNEY", newJourney)
                 setResult(Activity.RESULT_OK, replyIntent)
             }

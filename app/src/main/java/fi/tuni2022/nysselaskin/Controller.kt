@@ -8,15 +8,21 @@ const val YEAR = 360
 
 val CUSTOMERS = mapOf("Aikuinen" to "adult", "Nuori" to "youth", "Lapsi" to "children")
 
+/**
+ *  Returns vehicle icon based on vehicle name
+ */
 fun vehicleIcon(vehicle: String): Int {
-    if (vehicle == "fi.tuni2022.nysselaskin:id/radioButtonBussi") {
+    if (vehicle == "Bus") {
         return R.drawable.ic_baseline_bus_big
-    } else if (vehicle == "fi.tuni2022.nysselaskin:id/radioButtonRaitsikka") {
+    } else if (vehicle == "Tram") {
         return R.drawable.ic_baseline_tram_big
     }
     return 0
 }
 
+/**
+ *  Checks if night fare is needed for the journey
+ */
 fun isNightFare(date: Date): Boolean {
     val calendar = Calendar.getInstance()
     calendar.time = date
@@ -44,10 +50,16 @@ fun getSeasonPrice(customer: String, zones: Int, duration: Int): Double{
     return list[seasonDurationToInt(duration)][zones-2]
 }
 
+/**
+ *  Converts double to have 2 decimals and €
+ */
 fun convertDoubleToPrice(value: Double): String {
     return String.format("%.2f", value).replace(".", ",") + " €"
 }
 
+/**
+ * Returns value for access the Ticket Prices database
+ */
 fun seasonDurationToInt(seasonDuration: Int): Int {
     var value = 0
     
@@ -58,6 +70,15 @@ fun seasonDurationToInt(seasonDuration: Int): Int {
     }
     return value
 }
+
+/**
+ * List for each customer groups at order
+ * 1. SingleTicket
+ * 2. 30 day seasonTicket
+ * 3. 360 day seasonTicket
+ *
+ * Each small list contains zones from left to right 2 zones, 3 zones, 4 ...
+ */
     private val adult: List<List<Double>> = listOf(
         listOf(2.10, 3.40, 4.60, 5.90, 7.20),
         listOf(56.0, 73.0, 83.0, 105.0, 115.0),

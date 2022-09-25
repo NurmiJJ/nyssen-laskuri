@@ -165,11 +165,7 @@ class MainActivity : AppCompatActivity(),   SharedPreferences.OnSharedPreference
 
     override fun onStart() {
         super.onStart()
-        if (auth.currentUser != null){
-            Log.d(TAG, "tässä ja nyt")
-            updateDatabase()
-        }
-        //checkUserStatus()
+        checkUserStatus()
     }
 
     override fun onResume() {
@@ -264,6 +260,7 @@ class MainActivity : AppCompatActivity(),   SharedPreferences.OnSharedPreference
 
     private fun deleteJourney(matka: Matka){
         database.collection(collection)
+            .whereEqualTo("userId", auth.currentUser!!.uid)
             .whereEqualTo("date", matka.date)
             .get()
             .addOnSuccessListener {value ->

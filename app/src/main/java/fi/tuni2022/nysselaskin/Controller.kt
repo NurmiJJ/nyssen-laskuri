@@ -1,13 +1,12 @@
 package fi.tuni2022.nysselaskin
 
-import android.util.Log
 import java.util.*
 
 const val NIGHT_FARE = 3.0
 const val MONTH = 30
 const val YEAR = 360
 
-val CUSTOMERS = mapOf<String, String>("Aikuinen" to "adult", "Nuori" to "youth", "Lapsi" to "children")
+val CUSTOMERS = mapOf("Aikuinen" to "adult", "Nuori" to "youth", "Lapsi" to "children")
 
 fun vehicleIcon(vehicle: String): Int {
     if (vehicle == "fi.tuni2022.nysselaskin:id/radioButtonBussi") {

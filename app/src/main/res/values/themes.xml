@@ -1,16 +1,24 @@
-<resources xmlns:tools="http://schemas.android.com/tools">
+<resources>
     <!-- Base application theme. -->
     <style name="Theme.Nysselaskin" parent="Theme.MaterialComponents.DayNight.NoActionBar">
         <!-- Primary brand color. -->
-        <item name="colorPrimary">@color/colorPrimary</item>
+        <item name="colorPrimary">@color/colorPrimaryDark</item>
         <item name="colorPrimaryVariant">@color/colorPrimaryDark</item>
         <item name="colorOnPrimary">@color/white</item>
         <!-- Secondary brand color. -->
-        <item name="colorSecondary">@color/tramRed</item>
-        <item name="colorSecondaryVariant">@color/tramRed70</item>
-        <item name="colorOnSecondary">@color/black</item>
+        <item name="colorSecondary">@color/colorPrimaryDark</item>
+        <item name="colorOnSecondary">@color/tramRed10</item>
         <!-- Status bar color. -->
-        <item name="android:statusBarColor" tools:targetApi="l">?attr/colorPrimaryVariant</item>
+        <item name="android:statusBarColor" >?attr/colorPrimary</item>
         <!-- Customize your theme here. -->
+        <item name="android:textColor">@color/black</item>
+        <item name="settings">@drawable/ic_baseline_settings_24</item>
+    </style>
+
+    <style name="Theme.TextView" parent="Theme.Nysselaskin">
+        <item name="android:background">@color/colorAccent</item>
     </style>
 </resources>
+
+
+

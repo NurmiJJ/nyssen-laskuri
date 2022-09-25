@@ -65,50 +65,70 @@
         android:id="@+id/textViewChooseVehicle"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_marginTop="50dp"
+        android:layout_marginTop="32dp"
         android:text="@string/chooseVehicle"
         android:textSize="30sp"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toTopOf="parent" />
+        app:layout_constraintTop_toBottomOf="@+id/imageView" />
 
-    <TextView
-        android:id="@+id/textViewDate"
-        android:layout_width="wrap_content"
+    <com.google.android.material.textfield.TextInputLayout
+        android:id="@+id/textFieldDate"
+        style="@style/Theme.EditText"
+        android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:layout_marginStart="24dp"
-        android:text="@string/date"
-        app:layout_constraintBaseline_toBaselineOf="@+id/textViewSetDate"
-        app:layout_constraintStart_toStartOf="parent" />
-
-    <TextView
-        android:id="@+id/textViewTime"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:text="@string/time"
-        app:layout_constraintBaseline_toBaselineOf="@+id/textViewSetTime"
-        app:layout_constraintStart_toStartOf="@+id/textViewDate" />
-
-    <TextView
-        android:id="@+id/textViewSetDate"
-        android:layout_width="0dp"
-        android:layout_height="wrap_content"
-        android:layout_marginStart="16dp"
-        android:layout_marginTop="24dp"
+        android:layout_marginTop="32dp"
         android:layout_marginEnd="24dp"
+        android:hint="@string/date"
+        app:startIconDrawable="@drawable/ic_baseline_calendar_today"
         app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintStart_toEndOf="@+id/textViewDate"
-        app:layout_constraintTop_toBottomOf="@+id/radioGroup"
-        style="@style/Widget.MaterialComponents.TextInputLayout.OutlinedBox"/>
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/radioGroup">
 
-    <TextView
-        android:id="@+id/textViewSetTime"
+        <com.google.android.material.textfield.TextInputEditText
+            android:id="@+id/textInputEditTextDate"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:focusable="false"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toTopOf="parent" />
+
+
+    </com.google.android.material.textfield.TextInputLayout>
+
+    <com.google.android.material.textfield.TextInputLayout
+        android:id="@+id/textFieldTime"
+        style="@style/Theme.EditText"
         android:layout_width="0dp"
         android:layout_height="wrap_content"
         android:layout_marginTop="24dp"
-        android:layout_marginEnd="24dp"
+        android:hint="@string/time"
+        app:startIconDrawable="@drawable/ic_baseline_time"
+        app:layout_constraintEnd_toEndOf="@+id/textFieldDate"
+        app:layout_constraintStart_toStartOf="@+id/textFieldDate"
+        app:layout_constraintTop_toBottomOf="@+id/textFieldDate">
+
+        <com.google.android.material.textfield.TextInputEditText
+            android:id="@+id/textInputEditTextTime"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:focusable="false"
+            android:textColorHint="#757575"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toTopOf="parent" />
+
+    </com.google.android.material.textfield.TextInputLayout>
+
+    <ImageView
+        android:id="@+id/imageView"
+        android:layout_width="135dp"
+        android:layout_height="135dp"
+        android:layout_marginTop="50dp"
         app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintStart_toStartOf="@+id/textViewSetDate"
-        app:layout_constraintTop_toBottomOf="@+id/textViewSetDate" />
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent"
+        app:srcCompat="@mipmap/ic_launcher_round"
+        android:contentDescription="@string/logo" />
 
 </androidx.constraintlayout.widget.ConstraintLayout>

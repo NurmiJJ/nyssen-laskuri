@@ -22,29 +22,35 @@ class NewMatkaActivity : AppCompatActivity() {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_new_matka)
 
-        val setDate = findViewById<TextView>(R.id.textViewSetDate)
-        setDate.text = convertLongToDate(currentTimeToLong())
+        // Set current date and time
+        val setDate = findViewById<TextView>(R.id.textInputEditTextDate)
+        setDate.text = convertLongToDate(timeNow())
 
-        val setTime = findViewById<TextView>(R.id.textViewSetTime)
-        setTime.text = convertLongToTime(currentTimeToLong())
+        val setTime = findViewById<TextView>(R.id.textInputEditTextTime)
+        setTime.text = convertLongToTime(timeNow())
 
         buttonGroup = findViewById(R.id.radioGroup)
 
+        // Settings for date picker
         val constraintsBuilder =
             CalendarConstraints.Builder()
                 .setValidator(DateValidatorPointBackward.now())
+                .setStart(yearAgo())
+                .setEnd(yearLater())
 
         val datePicker =
             MaterialDatePicker.Builder.datePicker()
-                .setTitleText("Select date")
+                .setTitleText(getString(R.string.selectDate))
                 .setCalendarConstraints(constraintsBuilder.build())
                 .setSelection(MaterialDatePicker.todayInUtcMilliseconds())
                 .build()
 
+        // ClickListener for opening date picker
         setDate.setOnClickListener {
             datePicker.show(supportFragmentManager, "tag")
         }
 
+        // ClickListener for showing selected date picker data
         datePicker.addOnPositiveButtonClickListener {
             setDate.text = datePicker.selection?.let { it1 -> convertLongToDate(it1) }
         }
@@ -54,17 +60,20 @@ class NewMatkaActivity : AppCompatActivity() {
                 .setTimeFormat(TimeFormat.CLOCK_24H)
                 .setHour(currentHour())
                 .setMinute(currentMinute())
-                .setTitleText("Select Appointment time")
+                .setTitleText(getString(R.string.selectTime))
                 .build()
 
+        // ClickListener for opening time picker
         setTime.setOnClickListener {
-            timePicker.show(supportFragmentManager, "tag");
+            timePicker.show(supportFragmentManager, "tag")
         }
 
+        // ClickListener for showing selected time picker data
         timePicker.addOnPositiveButtonClickListener{
             setTime.text = convertIntToTime(timePicker.hour, timePicker.minute)
         }
 
+        // Send user data back to MainActivity
         val button = findViewById<Button>(R.id.saveButton)
         button.setOnClickListener {
             val replyIntent = Intent()
@@ -82,6 +91,7 @@ class NewMatkaActivity : AppCompatActivity() {
                 replyIntent.putExtra("JOURNEY", newJourney)
                 setResult(Activity.RESULT_OK, replyIntent)
             }
+            // Close the activity
             finish()
         }
     }

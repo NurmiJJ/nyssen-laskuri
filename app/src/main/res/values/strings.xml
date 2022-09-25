@@ -16,6 +16,9 @@
     <string name="hello">Lisää + painikkeesta uusi matka!</string>
     <string name="noUser">Kirjaudu sisään!</string>
 
+    <string name="selectDate">Valitse matkustuspäivä!</string>
+    <string name="selectTime">Aseta lähtöaika!</string>
+
     <!-- UI Titles -->
     <string name="nightFareTitle">Yölisä?</string>
     <string name="journeyDateTitle">Matkan päivämäärä</string>
@@ -53,5 +56,6 @@
     <string name="LogIn">Kirjaudu sisään</string>
     <string name="LogOut">Kirjaudu ulos</string>
     <string name="priceTitle">Maksut kauden alusta</string>
+    <string name="logo">logo</string>
 
 </resources>

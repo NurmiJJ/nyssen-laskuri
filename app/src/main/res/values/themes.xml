@@ -18,6 +18,12 @@
     <style name="Theme.TextView" parent="Theme.Nysselaskin">
         <item name="android:background">@color/colorAccent</item>
     </style>
+    
+    
+    <style name="Theme.EditText" parent="@style/Widget.MaterialComponents.TextInputLayout.OutlinedBox">
+        <item name="boxStrokeColor">@color/colorPrimaryDark</item>
+        <item name="boxStrokeWidth">2dp</item>
+    </style>
 </resources>
 
 

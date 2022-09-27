@@ -1,6 +1,9 @@
 package fi.tuni2022.nysselaskin
 
+import android.util.Log
 import java.util.*
+import java.util.concurrent.TimeUnit
+import kotlin.time.Duration.Companion.milliseconds
 
 const val NIGHT_FARE = 3.0
 const val MONTH = 30
@@ -69,6 +72,19 @@ fun seasonDurationToInt(seasonDuration: Int): Int {
         value = 2
     }
     return value
+}
+
+/**
+ * Linear estimation for infoDialog
+ */
+fun estimateTotalTrips(startDate: Date, seasonDuration: Int, currentJourneys: Int): Int{
+    val days = daysFromStart(startDate)
+
+    if (days < seasonDuration){
+         return seasonDuration / days * currentJourneys
+
+    }
+    return currentJourneys
 }
 
 /**

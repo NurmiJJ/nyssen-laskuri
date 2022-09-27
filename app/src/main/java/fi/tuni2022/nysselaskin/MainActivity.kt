@@ -3,11 +3,11 @@ package fi.tuni2022.nysselaskin
 import android.annotation.SuppressLint
 import android.app.Activity
 import android.app.AlertDialog
-import android.content.DialogInterface
 import android.content.Intent
 import android.content.SharedPreferences
 import android.os.Bundle
 import android.util.Log
+import android.view.View
 import android.widget.Button
 import android.widget.TextView
 import androidx.activity.result.contract.ActivityResultContracts
@@ -39,13 +39,14 @@ class MainActivity : AppCompatActivity(),   SharedPreferences.OnSharedPreference
     private lateinit var auth: FirebaseAuth
 
     private var allJourneys: ArrayList<Matka> = ArrayList()
-    private val adapter = MatkaListAdapter(allJourneys)
+    private val adapter = MatkaListAdapter(allJourneys, this)
 
     private lateinit var sharedPreferences: SharedPreferences
     private val model: NysseViewModel by viewModels()
 
     private lateinit var fab: FloatingActionButton
     private lateinit var topAppBar: MaterialToolbar
+    private lateinit var openInNew: TextView
 
     private lateinit var totalView: TextView
     private lateinit var totalPriceView: TextView
@@ -65,6 +66,10 @@ class MainActivity : AppCompatActivity(),   SharedPreferences.OnSharedPreference
             onSharedPreferenceChanged(pref, key)
         }
 
+    /**
+     * Compares two journeys and sorts them order
+     * where older is bottom
+     */
     class Compare: Comparator<Matka>{
         override fun compare(p0: Matka, p1: Matka): Int {
             return p1.date!!.compareTo(p0.date)
@@ -83,6 +88,8 @@ class MainActivity : AppCompatActivity(),   SharedPreferences.OnSharedPreference
         val recyclerView = findViewById<RecyclerView>(R.id.recyclerview)
         recyclerView.adapter = adapter
         recyclerView.layoutManager = LinearLayoutManager(this)
+
+        openInNew = findViewById(R.id.openIcon)
 
         totalView = findViewById(R.id.textViewTotal)
         totalPriceView = findViewById(R.id.textViewTotalPrice)
@@ -130,17 +137,59 @@ class MainActivity : AppCompatActivity(),   SharedPreferences.OnSharedPreference
             if (temp != null) {
                 Log.d(TAG, temp.date.toString())
                 AlertDialog.Builder(this)
-                    .setTitle("Delete Journey")
-                    .setMessage("Do you really want to delete " + temp.date + " ?")
-                    .setIcon(android.R.drawable.ic_delete)
-                    .setPositiveButton(android.R.string.yes,
-                        DialogInterface.OnClickListener { dialog, whichButton ->
-                            deleteJourney(temp)
-                        })
-                    .setNegativeButton(android.R.string.no, null).show()
+                    .setTitle(dateToString(temp.date!!))
+                    .setMessage(getString(R.string.deleteMessage))
+                    .setIcon(vehicleIcon(temp.vehicleType))
+                    .setPositiveButton(android.R.string.ok
+                    ) { _, _ -> deleteJourney(temp) }
+                    .setNegativeButton(android.R.string.cancel, null).show()
             }
         }
 
+        /**
+         * Extra infoView
+         */
+        val infoView = findViewById<View>(R.id.infoView)
+        infoView.setOnClickListener {
+            Log.d(TAG, "täälä ollaan")
+            Log.d(TAG, adapter.itemCount.toString())
+            if (adapter.itemCount != 0) {
+
+                val dialog = AlertDialog.Builder(this)
+                    .setTitle(R.string.info)
+                    .setView(R.layout.info_dialog)
+                    .setPositiveButton(R.string.close, null)
+                    .create()
+
+                /**
+                 * Here all data from added journeys are set to infoView before
+                 * it is displayed to user
+                 */
+                dialog.setOnShowListener{
+                    val startDate = allJourneys[allJourneys.size-1].date!!
+                    val seasonDuration = sharedPreferences.getString("duration", "").toString().toInt()
+
+                    val setStartDate = dialog.findViewById<TextView>(R.id.textInputStartDate)
+                    setStartDate.text = onlyDateToString(startDate)
+
+                    val setEndDate = dialog.findViewById<TextView>(R.id.textInputEndDate)
+                    setEndDate.text = onlyDateToString(lastDay(startDate, seasonDuration))
+
+                    val setEstimate = dialog.findViewById<TextView>(R.id.textInputJourneyEstimate)
+                    setEstimate.text = estimateTotalTrips(startDate, seasonDuration,
+                                       adapter.itemCount).toString()
+
+                    val setDaysLeft = dialog.findViewById<TextView>(R.id.textInputDaysLeft)
+                    setDaysLeft.text = daysLeft(startDate, seasonDuration).toString()
+
+                }
+                dialog.show()
+            }
+        }
+
+        /**
+         * Menu at top bar
+         */
         topAppBar = findViewById(R.id.topAppBar)
         topAppBar.setOnMenuItemClickListener { menuItem ->
             when (menuItem.itemId) {
@@ -178,17 +227,18 @@ class MainActivity : AppCompatActivity(),   SharedPreferences.OnSharedPreference
         sharedPreferences.unregisterOnSharedPreferenceChangeListener(listener)
     }
 
+    /**
+     * Function that solves result of addNewActivity
+     * Creates a new journey if result ok
+     */
     private var resultLauncher = registerForActivityResult(
         ActivityResultContracts.StartActivityForResult()
     ) { result ->
         if (result.resultCode == Activity.RESULT_OK) {
-            Log.d(TAG, "päästiin ulos")
-            // There are no request codes
             val data: Intent? = result.data
             if (data != null) {
                 val split: Array<String> = data.getStringExtra("JOURNEY")
                     .toString().split(";").toTypedArray()
-
 
                 Log.d(TAG, split[0])
                 val date = stringToDate(split[0])
@@ -201,6 +251,9 @@ class MainActivity : AppCompatActivity(),   SharedPreferences.OnSharedPreference
         }
     }
 
+    /**
+     * Adds new journey to Firebase database
+     */
     private fun addToDatabase(matka: Matka){
         // Add a new document with a generated ID
         database.collection(collection)
@@ -213,20 +266,23 @@ class MainActivity : AppCompatActivity(),   SharedPreferences.OnSharedPreference
             }
     }
 
-    @SuppressLint("SetTextI18n")
+    /**
+     * Calculates current price of all journeys and
+     * displays it in UI
+     */
     private fun updatePrice() {
         var totalPrice = 0.0
         val customer = CUSTOMERS[sharedPreferences.getString("customer", "")].toString()
         val zone = sharedPreferences.getString("zones", "").toString().toInt()
         val singlePrice = getSinglePrice(customer, zone)
 
-        Log.d(TAG, totalPrice.toString())
         for (journey in allJourneys){
             totalPrice += singlePrice
+
+            // If there is night fare it must be remembered here
             if (journey.nightFare){
                 totalPrice += NIGHT_FARE
             }
-            Log.d(TAG, totalPrice.toString())
         }
 
         totalPriceView.text = convertDoubleToPrice(totalPrice)
@@ -234,6 +290,10 @@ class MainActivity : AppCompatActivity(),   SharedPreferences.OnSharedPreference
 
 
     @SuppressLint("NotifyDataSetChanged")
+    /**
+     * Listener for Firebase database
+     * Keeps users journeys in arrayList for RecyclerView
+     */
     private fun updateDatabase() {
         database.collection(collection)
             .whereEqualTo("userId", auth.currentUser!!.uid)
@@ -250,14 +310,21 @@ class MainActivity : AppCompatActivity(),   SharedPreferences.OnSharedPreference
                     Log.w(TAG, matka.toString())
 
                 }
+                // Must update the UI fields after update
                 Collections.sort(allJourneys, Compare())
                 adapter.notifyDataSetChanged()
-                totalView.text = allJourneys.size.toString()
+                totalView.text = adapter.itemCount.toString()
                 updatePrice()
                 startScreen()
             }
     }
 
+    /**
+     * Deletes given journey from Firebase Database
+     * Because validation is done by journey's date
+     * and date won't have seconds, this function will
+     * delete all journeys at that time
+     */
     private fun deleteJourney(matka: Matka){
         database.collection(collection)
             .whereEqualTo("userId", auth.currentUser!!.uid)
@@ -276,47 +343,61 @@ class MainActivity : AppCompatActivity(),   SharedPreferences.OnSharedPreference
             }
     }
 
+    /**
+     * Deletes users whole database
+     */
     private fun deleteDatabase() {
         val user = auth.currentUser!!.uid
         AlertDialog.Builder(this)
-            .setTitle("Delete Journey")
-            .setMessage("Do you really want to delete your database ?")
-            .setIcon(android.R.drawable.ic_delete)
-            .setPositiveButton(android.R.string.yes,
-                DialogInterface.OnClickListener { dialog, whichButton ->
-                    database.collection(collection)
-                        .whereEqualTo("userId", user)
-                        .get()
-                        .addOnSuccessListener {value ->
-                            if (value != null) {
-                                for (doc in value) {
-                                    doc.reference.delete()
-                                }
-                                adapter.journeyDeleted()
+            .setTitle(getString(R.string.deleteDatabase))
+            .setMessage(getString(R.string.deleteDatabaseMessage))
+            .setIcon(android.R.drawable.ic_menu_delete)
+            .setPositiveButton(android.R.string.ok)
+            { _, _ ->
+                database.collection(collection)
+                    .whereEqualTo("userId", user)
+                    .get()
+                    .addOnSuccessListener { value ->
+                        if (value != null) {
+                            for (doc in value) {
+                                doc.reference.delete()
                             }
+                            adapter.journeyDeleted()
                         }
-                        .addOnFailureListener { exception ->
-                            Log.d(TAG, "get failed with ", exception)
-                        }
-                })
-            .setNegativeButton(android.R.string.no, null).show()
+                    }
+                    .addOnFailureListener { exception ->
+                        Log.d(TAG, "get failed with ", exception)
+                    }
+            }
+            .setNegativeButton(android.R.string.cancel, null).show()
 
     }
 
+    /**
+     * Shows welcome message if there is any journeys
+     * in Firebase database
+     */
     private fun startScreen(){
         if (adapter.itemCount == 0) {
             nightFareTitle.visibility = TextView.INVISIBLE
             journeyDateTitle.visibility = TextView.INVISIBLE
+            openInNew.visibility = TextView.INVISIBLE
 
             helloView.visibility = TextView.VISIBLE
         } else {
             nightFareTitle.visibility = TextView.VISIBLE
             journeyDateTitle.visibility = TextView.VISIBLE
+            openInNew.visibility = TextView.VISIBLE
 
             helloView.visibility = TextView.INVISIBLE
         }
     }
 
+    /**
+     * Calculates needed journeys at season to have season
+     * ticket cheaper than single tickets
+     * Updates that value to UI
+     */
     private fun updateNeededJourneys(){
         val customerType = CUSTOMERS[sharedPreferences.getString("customer", "")].toString()
         val seasonDuration = sharedPreferences.getString("duration", "").toString().toInt()
@@ -330,14 +411,14 @@ class MainActivity : AppCompatActivity(),   SharedPreferences.OnSharedPreference
         neededJourneysView.text = ticket.toString()
     }
 
+    /**
+     * Updates UI if there is update at settings
+     */
     override fun onSharedPreferenceChanged(sharedPreferences: SharedPreferences, key: String) {
         val text = sharedPreferences.getString(key, "").toString()
         updateNeededJourneys()
         updatePrice()
 
-        if (key == getString(R.string.deleteDatabase)) {
-            Log.d(TAG, "Nappia painettu")
-        }
         if (key == "customer") {
             model.customer.value = text
         }
@@ -350,6 +431,10 @@ class MainActivity : AppCompatActivity(),   SharedPreferences.OnSharedPreference
 
     }
 
+    /**
+     * Launch signIn intent or logs user out depending status
+     * of current user
+     */
     private fun singInOut(){
         if (auth.currentUser != null) {
             logOut()
@@ -359,6 +444,9 @@ class MainActivity : AppCompatActivity(),   SharedPreferences.OnSharedPreference
         }
     }
 
+    /**
+     * Logs current user out from Firebase database
+     */
     private fun logOut(){
         AuthUI.getInstance()
             .signOut(this)
@@ -371,14 +459,15 @@ class MainActivity : AppCompatActivity(),   SharedPreferences.OnSharedPreference
                 startScreen()
                 updateNeededJourneys()
                 updatePrice()
-
-                Log.d(TAG, "Uloskirjautuminen onnistui!")
             }
             .addOnFailureListener { exception ->
                 Log.d(TAG, "get failed with ", exception)
             }
     }
 
+    /**
+     * Changes UI depending status of current user
+     */
     private fun checkUserStatus(){
         if(auth.currentUser != null){
             helloView.text = getString(R.string.hello)
@@ -409,6 +498,7 @@ class MainActivity : AppCompatActivity(),   SharedPreferences.OnSharedPreference
         }
     }
 
+    // All provided ways to log in the Firebase database
     private val providers = arrayListOf(
         AuthUI.IdpConfig.EmailBuilder().build(),
         AuthUI.IdpConfig.AnonymousBuilder().build())

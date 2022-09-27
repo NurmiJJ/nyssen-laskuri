@@ -11,10 +11,14 @@
     <string name="deleteOne">Poista valittu matka</string>
     <string name="title_activity_settings">SettingsActivity</string>
     <string name="settings">Asetukset</string>
+    <string name="close">Sulje</string>
+    <string name="chooseMessage">Valitsit matkan:</string>
+
 
     <string name="deleteDatabase">Tyhjennä tietokanta</string>
     <string name="hello">Lisää + painikkeesta uusi matka!</string>
     <string name="noUser">Kirjaudu sisään!</string>
+    <string name="info">Tietoja kaudesta</string>
 
     <string name="selectDate">Valitse matkustuspäivä!</string>
     <string name="selectTime">Aseta lähtöaika!</string>
@@ -26,6 +30,13 @@
     <string name="customerTitle">Matkustajaryhmä: </string>
     <string name="seasonDurationTitle">Lipun pituus: </string>
     <string name="zonesTitle">Vyöhykkeitä: </string>
+
+    <string name="starDate">Kausi alkoi</string>
+    <string name="endDate">Kausi päättyy</string>
+    <string name="estimate">Arvio matkoista</string>
+    <string name="daysLeft">Päiviä jäljellä</string>
+
+    <string name="seasonEnded">Päättynyt</string>
 
 
     <!-- Preference Titles -->
@@ -57,5 +68,9 @@
     <string name="LogOut">Kirjaudu ulos</string>
     <string name="priceTitle">Maksut kauden alusta</string>
     <string name="logo">logo</string>
+
+
+    <string name="deleteMessage">Haluatko varmasti poistaa kyseisen matkan?</string>
+    <string name="deleteDatabaseMessage">Haluatko varmasti tyhjentää tietokannan?</string>
 
 </resources>

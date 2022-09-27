@@ -2,6 +2,7 @@
 <manifest xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:tools="http://schemas.android.com/tools"
     package="fi.tuni2022.nysselaskin">
+    <uses-permission android:name="android.permission.VIBRATE"/>
 
     <application
         android:allowBackup="true"
@@ -26,7 +27,8 @@
         <activity
             android:name=".MainActivity"
             android:exported="true"
-            android:screenOrientation="locked">
+            android:screenOrientation="locked"
+            android:hapticFeedbackEnabled="true">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
 

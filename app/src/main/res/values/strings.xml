@@ -1,7 +1,9 @@
 <resources>
     <string name="app_name">Nyssen Laskin</string>
-    <string name="bussi">Bussi</string>
-    <string name="raitsikka">Raitsikka</string>
+    <string name="bus">Bussi</string>
+    <string name="tram">Ratikka</string>
+    <string name="train">Lähijuna</string>
+
     <string name="add_new">Lisää matka!</string>
     <string name="fab">Lisätään matka!</string>
     <string name="welcome_new_activity">Lisätään uusi matka!</string>

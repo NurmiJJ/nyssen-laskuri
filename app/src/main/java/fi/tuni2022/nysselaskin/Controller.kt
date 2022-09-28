@@ -19,6 +19,8 @@ fun vehicleIcon(vehicle: String): Int {
         return R.drawable.ic_baseline_bus_big
     } else if (vehicle == "Tram") {
         return R.drawable.ic_baseline_tram_big
+    } else if (vehicle == "Train") {
+        return R.drawable.ic_baseline_train
     }
     return 0
 }

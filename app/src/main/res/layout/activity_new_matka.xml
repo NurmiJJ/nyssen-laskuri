@@ -10,9 +10,9 @@
         android:id="@+id/radioGroup"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_marginStart="16dp"
+        android:layout_marginStart="24dp"
         android:layout_marginTop="24dp"
-        android:layout_marginEnd="16dp"
+        android:layout_marginEnd="24dp"
         android:orientation="horizontal"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
@@ -20,32 +20,45 @@
 
         <RadioButton
             android:id="@+id/radioButtonBus"
-            android:layout_width="120dp"
+            android:layout_width="100dp"
             android:layout_height="wrap_content"
-            android:layout_marginEnd="16dp"
+            android:layout_marginEnd="8dp"
             android:background="@drawable/radio_selector"
             android:button="@android:color/transparent"
             android:checked="true"
             android:drawableStart="@drawable/ic_baseline_bus_big"
             android:elevation="4dp"
-            android:text="@string/bussi"
+            android:text="@string/bus"
             android:textAlignment="center"
             android:textColor="@drawable/text_color"
-            android:textSize="30sp" />
+            android:textSize="20sp" />
 
         <RadioButton
             android:id="@+id/radioButtonTram"
-            android:layout_width="160dp"
+            android:layout_width="110dp"
             android:layout_height="wrap_content"
-            android:layout_marginStart="16dp"
             android:background="@drawable/radio_selector"
             android:button="@android:color/transparent"
             android:drawableStart="@drawable/ic_baseline_tram_big"
             android:elevation="4dp"
-            android:text="@string/raitsikka"
+            android:text="@string/tram"
             android:textAlignment="center"
             android:textColor="@drawable/text_color"
-            android:textSize="30sp" />
+            android:textSize="20sp" />
+
+        <RadioButton
+            android:id="@+id/radioButtonTrain"
+            android:layout_width="130dp"
+            android:layout_height="wrap_content"
+            android:layout_marginStart="8dp"
+            android:background="@drawable/radio_selector"
+            android:button="@android:color/transparent"
+            android:drawableStart="@drawable/ic_baseline_train"
+            android:elevation="4dp"
+            android:text="@string/train"
+            android:textAlignment="center"
+            android:textColor="@drawable/text_color"
+            android:textSize="20sp" />
     </RadioGroup>
 
     <Button

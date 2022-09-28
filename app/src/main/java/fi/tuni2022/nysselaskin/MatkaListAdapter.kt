@@ -68,7 +68,7 @@ class MatkaListAdapter(private val mList: ArrayList<Matka>, private val context:
             typeItemView.setCompoundDrawablesWithIntrinsicBounds(vehicleIcon(matka.vehicleType), 0, 0, 0)
             journeyItemView.text = matka.date?.let { dateToString(it) }
             if (matka.nightFare) {
-                nightFareItemView.text = "X"
+                nightFareItemView.setCompoundDrawablesWithIntrinsicBounds(0, 0, 0, R.drawable.ic_baseline_nightfare)
             }
         }
 

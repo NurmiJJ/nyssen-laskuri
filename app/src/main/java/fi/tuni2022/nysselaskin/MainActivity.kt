@@ -6,13 +6,18 @@ import android.app.AlertDialog
 import android.content.Intent
 import android.content.SharedPreferences
 import android.os.Bundle
+import android.os.VibrationEffect
+import android.os.Vibrator
 import android.util.Log
+import android.view.Gravity
 import android.view.View
 import android.widget.Button
 import android.widget.TextView
+import android.widget.Toast
 import androidx.activity.result.contract.ActivityResultContracts
 import androidx.activity.viewModels
 import androidx.appcompat.app.AppCompatActivity
+import androidx.core.content.ContextCompat
 import androidx.lifecycle.Observer
 import androidx.preference.PreferenceManager
 import androidx.recyclerview.widget.LinearLayoutManager
@@ -28,7 +33,6 @@ import com.google.firebase.firestore.ktx.firestore
 import com.google.firebase.ktx.Firebase
 import java.util.*
 import kotlin.math.roundToInt
-
 
 const val TAG = "Nyssesofta"
 const val collection : String = "Journeys"
@@ -151,8 +155,6 @@ class MainActivity : AppCompatActivity(),   SharedPreferences.OnSharedPreference
          */
         val infoView = findViewById<View>(R.id.infoView)
         infoView.setOnClickListener {
-            Log.d(TAG, "täälä ollaan")
-            Log.d(TAG, adapter.itemCount.toString())
             if (adapter.itemCount != 0) {
 
                 val dialog = AlertDialog.Builder(this)
@@ -244,7 +246,18 @@ class MainActivity : AppCompatActivity(),   SharedPreferences.OnSharedPreference
                 val date = stringToDate(split[0])
                 val type = split[1]
                 val nightFare = split[2].toBoolean()
-                if (date != null) {
+                if (isTransfer(date!!, allJourneys)) {
+                    val toastMessage = Toast.makeText(this,
+                        getString(R.string.transfer), Toast.LENGTH_LONG
+                    )
+
+                    toastMessage.setGravity(Gravity.TOP or Gravity.CENTER_HORIZONTAL, 0, 0)
+                    toastMessage.show()
+
+                    // A little vibration for indicate the click
+                    val vibrator = ContextCompat.getSystemService(this, Vibrator::class.java)
+                    vibrator?.vibrate((VibrationEffect.createPredefined(VibrationEffect.EFFECT_DOUBLE_CLICK)))
+                } else {
                     addToDatabase(Matka(date, type, nightFare, auth.currentUser!!.uid))
                 }
             }

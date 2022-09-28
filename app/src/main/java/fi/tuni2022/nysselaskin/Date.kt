@@ -14,7 +14,11 @@ fun yearInMillis(): Long {
 }
 
 fun dayInMillis(): Long {
-    return 24 * 60 * 60 * 1000L
+    return 24 * 60 * minutesInMillis()
+}
+
+fun minutesInMillis(): Long {
+    return 60 * 1000L
 }
 
 fun currentHour(): Int {

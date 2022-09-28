@@ -1,11 +1,9 @@
 package fi.tuni2022.nysselaskin
 
-import android.util.Log
 import java.util.*
-import java.util.concurrent.TimeUnit
-import kotlin.time.Duration.Companion.milliseconds
 
 const val NIGHT_FARE = 3.0
+const val TRANSFERTIME = 90
 const val MONTH = 30
 const val YEAR = 360
 
@@ -43,6 +41,24 @@ fun isNightFare(date: Date): Boolean {
     }
 
     return nightFare
+}
+
+/**
+ * Checks if new journey is transfer from old journey
+ */
+fun isTransfer(date: Date, allJourney: ArrayList<Matka>): Boolean {
+    for (journey in allJourney) {
+        val oldTicketStart = convertDateToLong(journey.date!!)
+        val oldTicketEnd = oldTicketStart + TRANSFERTIME * minutesInMillis()
+        val newJourney = convertDateToLong(date)
+
+        if  (newJourney in oldTicketStart..oldTicketEnd){
+            // Second journey in same ticket
+            return true
+        }
+    }
+    // New ticket
+    return false
 }
 
 fun getSinglePrice(customer: String, zones: Int): Double {

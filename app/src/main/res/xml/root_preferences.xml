@@ -11,7 +11,7 @@
             app:useSimpleSummaryProvider="true" />
 
         <ListPreference
-            app:defaultValue="@string/month"
+            app:defaultValue="30"
             app:entries="@array/season_duration"
             app:entryValues="@array/season_duration_values"
             app:key="duration"
@@ -19,7 +19,7 @@
             app:useSimpleSummaryProvider="true" />
 
         <ListPreference
-            app:defaultValue="@string/zones_2"
+            app:defaultValue="2"
             app:entries="@array/zones"
             app:entryValues="@array/zoneValues"
             app:key="zones"

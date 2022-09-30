@@ -86,6 +86,7 @@ class MainActivity : AppCompatActivity(),   SharedPreferences.OnSharedPreference
 
         auth = Firebase.auth
 
+        PreferenceManager.setDefaultValues(this, R.xml.root_preferences, false)
         sharedPreferences = PreferenceManager.getDefaultSharedPreferences(this)
         sharedPreferences.registerOnSharedPreferenceChangeListener(this)
 
@@ -107,8 +108,6 @@ class MainActivity : AppCompatActivity(),   SharedPreferences.OnSharedPreference
         nightFareTitle = findViewById(R.id.textViewFareTitle)
         helloView = findViewById(R.id.textViewHello)
 
-        updateNeededJourneys()
-
         val customerObserver = Observer<String> { newCustomer ->
             customerView.text = newCustomer
         }
@@ -128,6 +127,9 @@ class MainActivity : AppCompatActivity(),   SharedPreferences.OnSharedPreference
         model.customer.value = sharedPreferences.getString("customer", "")
         model.seasonDuration.value = sharedPreferences.getString("duration", "")
         model.zones.value = sharedPreferences.getString("zones", "")
+
+
+        updateNeededJourneys()
 
         fab = findViewById(R.id.fab)
         fab.setOnClickListener {
@@ -422,6 +424,7 @@ class MainActivity : AppCompatActivity(),   SharedPreferences.OnSharedPreference
         val ticket = (seasonPrice / singleTicketPrice).roundToInt()
 
         neededJourneysView.text = ticket.toString()
+        
     }
 
     /**
@@ -470,7 +473,7 @@ class MainActivity : AppCompatActivity(),   SharedPreferences.OnSharedPreference
 
                 checkUserStatus()
                 startScreen()
-                updateNeededJourneys()
+                totalView.text = adapter.itemCount.toString()
                 updatePrice()
             }
             .addOnFailureListener { exception ->

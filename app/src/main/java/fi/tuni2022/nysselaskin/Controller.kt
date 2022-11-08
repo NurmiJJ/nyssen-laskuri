@@ -1,9 +1,10 @@
 package fi.tuni2022.nysselaskin
 
 import java.util.*
+import kotlin.math.roundToInt
 
 const val NIGHT_FARE = 3.0
-const val TRANSFERTIME = 90
+const val TRANSFER_TIME = 90
 const val MONTH = 30
 const val YEAR = 360
 
@@ -49,7 +50,7 @@ fun isNightFare(date: Date): Boolean {
 fun isTransfer(date: Date, allJourney: ArrayList<Matka>): Boolean {
     for (journey in allJourney) {
         val oldTicketStart = convertDateToLong(journey.date!!)
-        val oldTicketEnd = oldTicketStart + TRANSFERTIME * minutesInMillis()
+        val oldTicketEnd = oldTicketStart + TRANSFER_TIME * minutesInMillis()
         val newJourney = convertDateToLong(date)
 
         if  (newJourney in oldTicketStart..oldTicketEnd){
@@ -99,10 +100,29 @@ fun estimateTotalTrips(startDate: Date, seasonDuration: Int, currentJourneys: In
     val days = daysFromStart(startDate)
 
     if (days < seasonDuration){
-         return seasonDuration / days * currentJourneys
+         return (seasonDuration.toDouble() / days.toDouble() * currentJourneys.toDouble()).toInt()
 
     }
     return currentJourneys
+}
+
+fun estimateTotalPayments(startDate: Date, seasonDuration: Int, currentPayments: Double): Double{
+    val days = daysFromStart(startDate)
+
+    if (days < seasonDuration){
+        return (seasonDuration.toDouble() / days.toDouble() * currentPayments)
+
+    }
+    return currentPayments
+}
+
+fun neededTrips(customer: String, zones: Int, seasonDuration: Int, currentJourneysPrice: Double): Int{
+    val seasonPrice = getSeasonPrice(customer, zones, seasonDuration)
+    val singleTicketPrice = getSinglePrice(customer, zones)
+
+    val trips = (seasonPrice - currentJourneysPrice) / singleTicketPrice
+
+    return trips.roundToInt()
 }
 
 /**

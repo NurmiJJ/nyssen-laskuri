@@ -26,7 +26,7 @@
     <string name="selectTime">Aseta lähtöaika!</string>
 
     <!-- UI Titles -->
-    <string name="nightFareTitle">Yölisä?</string>
+    <string name="nightFareTitle">Yömatkaa</string>
     <string name="journeyDateTitle">Matkan päivämäärä</string>
 
     <string name="customerTitle">Matkustajaryhmä: </string>
@@ -68,12 +68,16 @@
     <string name="LogInInfo">Kirjaudu tietokantaan</string>
     <string name="LogIn">Kirjaudu sisään</string>
     <string name="LogOut">Kirjaudu ulos</string>
-    <string name="priceTitle">Maksut kauden alusta</string>
+    <string name="payments">Maksut kaudella</string>
     <string name="logo">logo</string>
 
 
     <string name="deleteMessage">Haluatko varmasti poistaa kyseisen matkan?</string>
     <string name="deleteDatabaseMessage">Haluatko varmasti tyhjentää tietokannan?</string>
     <string name="transfer">Vaihtomatka! Matkaa ei tallenneta!</string>
+    <string name="seasonPrice">Kauden hinta</string>
+    <string name="neededJourney">Matkaa jäljellä</string>
+    <string name="totalTrips">Kuljettua matkaa</string>
+    <string name="estimatePayments">Arvio maksuista</string>
 
 </resources>

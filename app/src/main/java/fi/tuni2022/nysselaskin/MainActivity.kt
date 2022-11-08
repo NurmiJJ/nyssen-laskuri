@@ -32,7 +32,6 @@ import com.google.firebase.auth.ktx.auth
 import com.google.firebase.firestore.ktx.firestore
 import com.google.firebase.ktx.Firebase
 import java.util.*
-import kotlin.math.roundToInt
 
 const val TAG = "Nyssesofta"
 const val collection : String = "Journeys"
@@ -53,15 +52,14 @@ class MainActivity : AppCompatActivity(),   SharedPreferences.OnSharedPreference
     private lateinit var openInNew: TextView
 
     private lateinit var totalView: TextView
-    private lateinit var totalPriceView: TextView
     private lateinit var neededJourneysView: TextView
+    private lateinit var nightTotal: TextView
 
     private lateinit var customerView: TextView
     private lateinit var durationView: TextView
     private lateinit var zoneView: TextView
 
     private lateinit var journeyDateTitle: TextView
-    private lateinit var nightFareTitle: TextView
     private lateinit var helloView: TextView
 
 
@@ -95,17 +93,15 @@ class MainActivity : AppCompatActivity(),   SharedPreferences.OnSharedPreference
         recyclerView.layoutManager = LinearLayoutManager(this)
 
         openInNew = findViewById(R.id.openIcon)
-
-        totalView = findViewById(R.id.textViewTotal)
-        totalPriceView = findViewById(R.id.textViewTotalPrice)
         neededJourneysView = findViewById(R.id.textViewNeededJourneys)
+        totalView = findViewById(R.id.textViewTotalView)
+        nightTotal = findViewById(R.id.textViewNightFareTotalView)
 
         durationView = findViewById(R.id.textViewDuration)
         customerView = findViewById(R.id.textViewCustomer)
         zoneView = findViewById(R.id.textViewZones)
 
         journeyDateTitle = findViewById(R.id.textViewJourneyDateTitle)
-        nightFareTitle = findViewById(R.id.textViewFareTitle)
         helloView = findViewById(R.id.textViewHello)
 
         val customerObserver = Observer<String> { newCustomer ->
@@ -172,6 +168,9 @@ class MainActivity : AppCompatActivity(),   SharedPreferences.OnSharedPreference
                 dialog.setOnShowListener{
                     val startDate = allJourneys[allJourneys.size-1].date!!
                     val seasonDuration = sharedPreferences.getString("duration", "").toString().toInt()
+                    val customerType = CUSTOMERS[sharedPreferences.getString("customer", "")].toString()
+                    val zones = sharedPreferences.getString("zones", "").toString().toInt()
+                    val price = calculatePrice()
 
                     val setStartDate = dialog.findViewById<TextView>(R.id.textInputStartDate)
                     setStartDate.text = onlyDateToString(startDate)
@@ -185,6 +184,17 @@ class MainActivity : AppCompatActivity(),   SharedPreferences.OnSharedPreference
 
                     val setDaysLeft = dialog.findViewById<TextView>(R.id.textInputDaysLeft)
                     setDaysLeft.text = daysLeft(startDate, seasonDuration).toString()
+
+                    val seasonPrice = dialog.findViewById<TextView>(R.id.textInputSeasonPrice)
+                    seasonPrice.text = convertDoubleToPrice(
+                        getSeasonPrice(customerType, zones, seasonDuration))
+
+                    val payments = dialog.findViewById<TextView>(R.id.textInputPayments)
+                    payments.text = convertDoubleToPrice(price)
+
+                    val paymentEstimate = dialog.findViewById<TextView>(R.id.textInputEstimatePayments)
+                    paymentEstimate.text = convertDoubleToPrice(
+                        estimateTotalPayments(startDate, seasonDuration, price))
 
                 }
                 dialog.show()
@@ -285,7 +295,7 @@ class MainActivity : AppCompatActivity(),   SharedPreferences.OnSharedPreference
      * Calculates current price of all journeys and
      * displays it in UI
      */
-    private fun updatePrice() {
+    private fun calculatePrice() : Double {
         var totalPrice = 0.0
         val customer = CUSTOMERS[sharedPreferences.getString("customer", "")].toString()
         val zone = sharedPreferences.getString("zones", "").toString().toInt()
@@ -300,7 +310,19 @@ class MainActivity : AppCompatActivity(),   SharedPreferences.OnSharedPreference
             }
         }
 
-        totalPriceView.text = convertDoubleToPrice(totalPrice)
+        return totalPrice
+    }
+
+    private fun calculateNightTrips() : Int {
+        var nightTrip = 0
+
+        for (journey in allJourneys){
+            if(isNightFare(journey.date!!)) {
+                nightTrip ++
+            }
+        }
+
+        return nightTrip
     }
 
 
@@ -329,7 +351,8 @@ class MainActivity : AppCompatActivity(),   SharedPreferences.OnSharedPreference
                 Collections.sort(allJourneys, Compare())
                 adapter.notifyDataSetChanged()
                 totalView.text = adapter.itemCount.toString()
-                updatePrice()
+                updateNeededJourneys()
+                nightTotal.text = calculateNightTrips().toString()
                 startScreen()
             }
     }
@@ -394,13 +417,11 @@ class MainActivity : AppCompatActivity(),   SharedPreferences.OnSharedPreference
      */
     private fun startScreen(){
         if (adapter.itemCount == 0) {
-            nightFareTitle.visibility = TextView.INVISIBLE
             journeyDateTitle.visibility = TextView.INVISIBLE
             openInNew.visibility = TextView.INVISIBLE
 
             helloView.visibility = TextView.VISIBLE
         } else {
-            nightFareTitle.visibility = TextView.VISIBLE
             journeyDateTitle.visibility = TextView.VISIBLE
             openInNew.visibility = TextView.VISIBLE
 
@@ -418,12 +439,7 @@ class MainActivity : AppCompatActivity(),   SharedPreferences.OnSharedPreference
         val seasonDuration = sharedPreferences.getString("duration", "").toString().toInt()
         val zones = sharedPreferences.getString("zones", "").toString().toInt()
 
-        val seasonPrice = getSeasonPrice(customerType, zones, seasonDuration)
-        val singleTicketPrice = getSinglePrice(customerType, zones)
-
-        val ticket = (seasonPrice / singleTicketPrice).roundToInt()
-
-        neededJourneysView.text = ticket.toString()
+        neededJourneysView.text = neededTrips(customerType, zones, seasonDuration, calculatePrice() ).toString()
         
     }
 
@@ -433,7 +449,6 @@ class MainActivity : AppCompatActivity(),   SharedPreferences.OnSharedPreference
     override fun onSharedPreferenceChanged(sharedPreferences: SharedPreferences, key: String) {
         val text = sharedPreferences.getString(key, "").toString()
         updateNeededJourneys()
-        updatePrice()
 
         if (key == "customer") {
             model.customer.value = text
@@ -474,7 +489,8 @@ class MainActivity : AppCompatActivity(),   SharedPreferences.OnSharedPreference
                 checkUserStatus()
                 startScreen()
                 totalView.text = adapter.itemCount.toString()
-                updatePrice()
+                nightTotal.text = calculateNightTrips().toString()
+                updateNeededJourneys()
             }
             .addOnFailureListener { exception ->
                 Log.d(TAG, "get failed with ", exception)

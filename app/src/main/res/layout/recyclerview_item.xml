@@ -19,23 +19,11 @@
         android:id="@+id/textViewJourneyDate"
         android:layout_width="0dp"
         android:layout_height="30dp"
-        android:theme="@style/Theme.TextView"
         android:gravity="center_vertical"
         android:textSize="15sp"
-        app:layout_constraintEnd_toStartOf="@+id/textViewNightFare"
-        app:layout_constraintStart_toEndOf="@+id/textViewType"
-        app:layout_constraintTop_toTopOf="@+id/textViewType" />
-
-    <TextView
-        android:id="@+id/textViewNightFare"
-        android:layout_width="50dp"
-        android:layout_height="30dp"
-        android:layout_marginStart="8dp"
-        android:layout_marginEnd="8dp"
-        android:gravity="center"
         android:theme="@style/Theme.TextView"
         app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintStart_toEndOf="@+id/textViewJourneyDate"
+        app:layout_constraintStart_toEndOf="@+id/textViewType"
         app:layout_constraintTop_toTopOf="@+id/textViewType" />
 
 

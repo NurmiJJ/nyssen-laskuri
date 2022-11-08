@@ -75,6 +75,15 @@ fun convertLongToTime(time: Long): String{
 }
 
 fun convertIntToTime(hour: Int, minute: Int): String {
+    if (hour < 10 && minute < 10) {
+        return "0$hour:0$minute"
+    }
+    else if(hour < 10 ) {
+        return "0$hour:$minute"
+    }
+    else if (minute < 10) {
+        return "$hour:0$minute"
+    }
     return "$hour:$minute"
 }
 

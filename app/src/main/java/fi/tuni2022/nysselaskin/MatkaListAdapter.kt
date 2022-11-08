@@ -62,14 +62,10 @@ class MatkaListAdapter(private val mList: ArrayList<Matka>, private val context:
     class MatkaViewHolder(itemView: View) : RecyclerView.ViewHolder(itemView) {
         private val typeItemView: TextView = itemView.findViewById(R.id.textViewType)
         private val journeyItemView: TextView = itemView.findViewById(R.id.textViewJourneyDate)
-        private val nightFareItemView: TextView = itemView.findViewById(R.id.textViewNightFare)
 
         fun bind(matka: Matka) {
             typeItemView.setCompoundDrawablesWithIntrinsicBounds(vehicleIcon(matka.vehicleType), 0, 0, 0)
             journeyItemView.text = matka.date?.let { dateToString(it) }
-            if (matka.nightFare) {
-                nightFareItemView.setCompoundDrawablesWithIntrinsicBounds(0, 0, 0, R.drawable.ic_baseline_nightfare)
-            }
         }
 
         companion object {

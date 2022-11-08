@@ -55,6 +55,32 @@
 
     </com.google.android.material.textfield.TextInputLayout>
 
+    <com.google.android.material.textfield.TextInputLayout
+        android:id="@+id/daysLeft"
+        style="@style/Theme.EditText"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginStart="24dp"
+        android:layout_marginEnd="24dp"
+        android:layout_marginTop="16dp"
+        android:layout_weight="1"
+        android:hint="@string/daysLeft"
+        android:textAlignment="gravity"
+        app:layout_constraintEnd_toEndOf="@id/endDate"
+        app:layout_constraintTop_toBottomOf="@+id/endDate">
+
+
+    <com.google.android.material.textfield.TextInputEditText
+        android:id="@+id/textInputDaysLeft"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:focusable="false"
+        android:textColorHint="#757575"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent" />
+
+    </com.google.android.material.textfield.TextInputLayout>
+
     <LinearLayout
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
@@ -62,7 +88,7 @@
         android:orientation="horizontal"
         android:weightSum="2"
         app:layout_constraintStart_toStartOf="@+id/endDate"
-        app:layout_constraintTop_toBottomOf="@+id/endDate">
+        app:layout_constraintTop_toBottomOf="@+id/linearLayout">
 
         <com.google.android.material.textfield.TextInputLayout
             android:id="@+id/journeyEstimate"
@@ -89,20 +115,80 @@
         </com.google.android.material.textfield.TextInputLayout>
 
         <com.google.android.material.textfield.TextInputLayout
-            android:id="@+id/daysLeft"
+            android:id="@+id/estimatePayments"
             style="@style/Theme.EditText"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:layout_marginEnd="24dp"
             android:layout_marginStart="4dp"
+            android:layout_marginEnd="24dp"
             android:layout_weight="1"
-            android:hint="@string/daysLeft"
+            android:hint="@string/estimatePayments"
             android:textAlignment="gravity"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintTop_toTopOf="@+id/journeyEstimate">
 
             <com.google.android.material.textfield.TextInputEditText
-                android:id="@+id/textInputDaysLeft"
+                android:id="@+id/textInputEstimatePayments"
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                android:focusable="false"
+                android:textColorHint="#757575"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toTopOf="parent" />
+
+        </com.google.android.material.textfield.TextInputLayout>
+
+    </LinearLayout>
+
+    <LinearLayout
+        android:id="@+id/linearLayout"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="16dp"
+        android:orientation="horizontal"
+        android:weightSum="2"
+        app:layout_constraintStart_toStartOf="@+id/endDate"
+        app:layout_constraintTop_toBottomOf="@+id/daysLeft">
+
+        <com.google.android.material.textfield.TextInputLayout
+            android:id="@+id/payments"
+            style="@style/Theme.EditText"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginStart="24dp"
+            android:layout_marginEnd="4dp"
+            android:layout_weight="1"
+            android:hint="@string/payments"
+            android:textAlignment="gravity"
+            app:layout_constraintStart_toStartOf="@+id/startDate"
+            app:layout_constraintTop_toBottomOf="@+id/startDate">
+
+            <com.google.android.material.textfield.TextInputEditText
+                android:id="@+id/textInputPayments"
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                android:focusable="false"
+                android:textColorHint="#757575"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toTopOf="parent" />
+
+        </com.google.android.material.textfield.TextInputLayout>
+
+        <com.google.android.material.textfield.TextInputLayout
+            android:id="@+id/seasonPrice"
+            style="@style/Theme.EditText"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginStart="4dp"
+            android:layout_marginEnd="24dp"
+            android:layout_weight="1"
+            android:hint="@string/seasonPrice"
+            android:textAlignment="gravity"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintTop_toTopOf="@+id/journeyEstimate">
+
+            <com.google.android.material.textfield.TextInputEditText
+                android:id="@+id/textInputSeasonPrice"
                 android:layout_width="match_parent"
                 android:layout_height="match_parent"
                 android:focusable="false"

@@ -54,47 +54,6 @@
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent" />
 
-    <TextView
-        android:id="@+id/textViewSlash"
-        android:layout_width="85dp"
-        android:layout_height="102dp"
-        android:layout_marginTop="8dp"
-        android:layout_marginEnd="16dp"
-        android:gravity="center"
-        android:text="/"
-        android:textColor="@color/colorPrimaryDark"
-        android:textSize="100sp"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/appBarLayout"
-        tools:ignore="HardcodedText" />
-
-    <TextView
-        android:id="@+id/textViewTotal"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_marginTop="8dp"
-        android:layout_marginEnd="48dp"
-        android:gravity="center"
-        android:textColor="@color/colorPrimaryDark"
-        android:textSize="30sp"
-        app:layout_constraintBottom_toTopOf="@+id/recyclerview"
-        app:layout_constraintEnd_toEndOf="@+id/textViewSlash"
-        app:layout_constraintTop_toBottomOf="@+id/appBarLayout"
-        app:layout_constraintVertical_bias="0.255" />
-
-    <TextView
-        android:id="@+id/textViewNeededJourneys"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_marginStart="48dp"
-        android:gravity="center"
-        android:textColor="@color/colorPrimaryDark"
-        android:textSize="30sp"
-        app:layout_constraintBottom_toTopOf="@+id/recyclerview"
-        app:layout_constraintStart_toStartOf="@+id/textViewSlash"
-        app:layout_constraintTop_toBottomOf="@+id/appBarLayout"
-        app:layout_constraintVertical_bias="0.655" />
-
     <Button
         android:id="@+id/buttonDeleteOne"
         android:layout_width="wrap_content"
@@ -130,16 +89,6 @@
         app:layout_constraintTop_toTopOf="@+id/textViewZoneTT" />
 
     <TextView
-        android:id="@+id/textViewFareTitle"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_marginTop="195dp"
-        android:layout_marginEnd="20dp"
-        android:text="@string/nightFareTitle"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintTop_toTopOf="parent" />
-
-    <TextView
         android:id="@+id/textViewJourneyDateTitle"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
@@ -149,16 +98,97 @@
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent" />
 
-    <TextView
-        android:id="@+id/textViewTotalPrice"
-        android:layout_width="wrap_content"
+    <LinearLayout
+        android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:layout_marginStart="32dp"
-        android:layout_marginTop="20dp"
+        android:layout_marginTop="16dp"
+        android:orientation="horizontal"
+        android:weightSum="3"
+        app:layout_constraintStart_toStartOf="@+id/infoView"
+        app:layout_constraintTop_toTopOf="@+id/infoView">
+
+    <TextView
+        android:id="@+id/textViewNeededJourneys"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="16dp"
         android:textColor="@color/colorPrimaryDark"
-        android:textSize="50sp"
+        android:textSize="60sp"
+        android:gravity="center"
+        android:layout_weight="1"
+        android:text = "123"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toBottomOf="@+id/textViewSeasonTT" />
+
+    <TextView
+        android:id="@+id/textViewTotalView"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:gravity="center"
+        android:textColor="@color/colorPrimaryDark"
+        android:layout_marginTop="16dp"
+        android:textSize="60sp"
+        android:layout_weight="1"
+        android:text = "123"
+        app:layout_constraintEnd_toEndOf="@+id/infoView"
+        app:layout_constraintStart_toStartOf="@+id/infoView"
+        app:layout_constraintTop_toTopOf="@+id/textViewNeededJourneys" />
+
+    <TextView
+        android:id="@+id/textViewNightFareTotalView"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="16dp"
+        android:textColor="@color/colorPrimaryDark"
+        android:textSize="60sp"
+        android:layout_weight="1"
+        android:text = "123"
+        android:gravity="center"
+        app:layout_constraintEnd_toEndOf="@+id/infoView"
+        app:layout_constraintTop_toTopOf="@+id/textViewNeededJourneys" />
+    </LinearLayout>
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="100dp"
+        android:orientation="horizontal"
+        android:weightSum="3"
+        app:layout_constraintStart_toStartOf="@+id/infoView"
+        app:layout_constraintTop_toTopOf="@+id/infoView">
+
+        <TextView
+            android:id="@+id/textViewNeededJourneyTitle"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_weight="1"
+            android:gravity="center"
+            android:text="@string/neededJourney"
+            app:layout_constraintStart_toStartOf="@id/infoView"
+            app:layout_constraintTop_toTopOf="@id/infoView" />
+
+        <TextView
+            android:id="@+id/textViewJourneyTotalTitle"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_weight="1"
+            android:gravity="center"
+            android:text="@string/totalTrips"
+            app:layout_constraintStart_toStartOf="@id/infoView"
+            app:layout_constraintTop_toTopOf="@id/textViewNeededJourneyTitle" />
+
+        <TextView
+            android:id="@+id/textViewNightFareTotalTitle"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_weight="1"
+            android:gravity="center"
+            android:text="@string/nightFareTitle"
+            app:layout_constraintStart_toStartOf="@id/infoView"
+            app:layout_constraintTop_toTopOf="@id/textViewNeededJourneyTitle" />
+    </LinearLayout>
+
+
 
     <TextView
         android:id="@+id/textViewSeasonTT"
@@ -187,14 +217,6 @@
         android:text="@string/customerTitle"
         app:layout_constraintStart_toEndOf="@+id/textViewZones"
         app:layout_constraintTop_toTopOf="@+id/textViewSeasonTT" />
-
-    <TextView
-        android:id="@+id/textViewPriceTitle"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:text="@string/priceTitle"
-        app:layout_constraintStart_toStartOf="@+id/textViewTotalPrice"
-        app:layout_constraintTop_toBottomOf="@+id/textViewTotalPrice" />
 
     <TextView
         android:id="@+id/openIcon"
